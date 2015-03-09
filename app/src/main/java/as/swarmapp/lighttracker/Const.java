@@ -11,6 +11,9 @@ public final class Const {
     public static final String ERROR_WITH_ = "Error with %s : ";
     public static final String DOESN_T_MATCH = "it doesn't match the expected regular expression";
     public static final String ERROR___ = ERROR_WITH_ + "\"%s\", " + DOESN_T_MATCH + " %s";
+    public static final String REQUETE_EN_COURS = "A request is pending, please wait for it to terminate.";
+    public static final String LANCEMENT_REQUETE = "Address checking : pending";
+    public static final String ECHEC_REQUETE = "The server could not be verified, please check the address";
 
     public static final String DONNEES = "adresse+token";
 

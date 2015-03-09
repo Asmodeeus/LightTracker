@@ -5,6 +5,6 @@
     <item android:id="@+id/parametres" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/recuperation_donnees" android:title="@string/action_settings"
+    <item android:id="@+id/recuperation_donnees" android:title="@string/recuperation"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

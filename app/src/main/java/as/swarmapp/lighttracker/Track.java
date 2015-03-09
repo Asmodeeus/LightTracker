@@ -21,6 +21,7 @@ public class Track extends ActionBarActivity {
             adresse = donnees[0];
             token = donnees[1];
             ((TextView) findViewById(R.id.Ttest)).setText(adresse + " | " + token);
+
         }else{
             new Exception("Cette configuration n'est pas censée arriver").printStackTrace();
             finish();

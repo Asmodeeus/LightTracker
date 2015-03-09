@@ -11,4 +11,5 @@
     <string name="EtokenHint">0123456789abcdef</string>
     <string name="title_activity_recuperation">Recuperation</string>
     <string name="title_activity_track">Track</string>
+    <string name="recuperation">Récupération des données</string>
 </resources>
