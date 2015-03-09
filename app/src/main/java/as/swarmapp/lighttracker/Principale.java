@@ -20,6 +20,7 @@ public class Principale extends ActionBarActivity {
     private SharedPreferences 		sharedPref;
     private EditText eSite;
     private EditText eToken;
+    private String site_debug = "http://t-viravau.duckdns.org:8000"; //FIXME : à retirer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class Principale extends ActionBarActivity {
 
         eSite = (EditText) findViewById(R.id.Esite);
         eToken = (EditText) findViewById(R.id.Etoken);
-        eSite.setText(sharedPref.getString(Const.PREF_SITE, ""));
+        eSite.setText(sharedPref.getString(Const.PREF_SITE, ""+site_debug));
         eToken.setText(sharedPref.getString(Const.PREF_TOKEN, ""));
 
         ((Button) findViewById(R.id.Bgo)).setOnClickListener(new View.OnClickListener() {
