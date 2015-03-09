@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Light Tracker</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="Sseparateur">Séparateur visuel</string>
+    <string name="Bgo">Go tracking !</string>
+    <string name="Tsite">Website address</string>
+    <string name="EsiteHint">www.example.com</string>
+    <string name="Ttoken">Tracker\'s token</string>
+    <string name="EtokenHint">0123456789abcdef</string>
+    <string name="title_activity_recuperation">Recuperation</string>
+    <string name="title_activity_track">Track</string>
+</resources>

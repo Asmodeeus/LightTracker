@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Principale">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/Tsite"
+                android:id="@+id/Tsite"
+                android:layout_centerHorizontal="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="@string/EsiteHint"
+                android:ems="10"
+                android:id="@+id/Esite"
+                android:layout_below="@+id/Tsite"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true" />
+
+
+            <ImageView
+                android:id="@+id/Iseparateur"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/Esite"
+                android:contentDescription="@string/Sseparateur"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/divider_horizontal_textfield"
+                android:paddingLeft="10sp"
+                android:paddingRight="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/Ttoken"
+                android:id="@+id/Ttoken"
+                android:layout_below="@+id/Iseparateur"
+                android:layout_centerHorizontal="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:hint="@string/EtokenHint"
+                android:id="@+id/Etoken"
+                android:layout_below="@+id/Ttoken"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Bgo"
+                android:id="@+id/Bgo"
+                android:layout_below="@+id/Etoken"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
