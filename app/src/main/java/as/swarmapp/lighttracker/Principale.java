@@ -29,6 +29,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     private static int      SITE            = 0;
     private static int      TOKEN           = 1;
     private static String   site_debug      = "http://t-viravau.duckdns.org:18001"; //FIXME : à retirer
+    private static String   token_debug     = "249737703537f0de5c007e30f7b009b4"; //FIXME : à retirer
 
     // Sémaphore interdisant d'executer plusieurs requêtes en même temps
     private boolean         requeteEnCours  = false;
@@ -61,8 +62,8 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
 
         eSite = (EditText) findViewById(R.id.Esite);
         eToken = (EditText) findViewById(R.id.Etoken);
-        eSite.setText(sharedPref.getString(Const.PREF_SITE, ""+site_debug));
-        eToken.setText(sharedPref.getString(Const.PREF_TOKEN, ""));
+        eSite.setText(sharedPref.getString(Const.PREF_SITE, "" +site_debug));
+        eToken.setText(sharedPref.getString(Const.PREF_TOKEN, "" +token_debug));
 
         ((Button) findViewById(R.id.Bgo)).setOnClickListener(OCLBgo);
     }
@@ -173,6 +174,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
                 sharedPref.edit()
                         .putString(Const.PREF_SITE, donnees[SITE])
                         .putString(Const.PREF_TOKEN, donnees[TOKEN])
+                        // TODO  ajouter le tracker_id
                         .apply();
 
                 startActivity(new Intent(Principale.this, Track.class).putExtra(Const.DONNEES, donnees));
