@@ -12,4 +12,6 @@
     <string name="title_activity_recuperation">Recuperation</string>
     <string name="title_activity_track">Track</string>
     <string name="recuperation">Récupération des données</string>
+    <string name="Ttracker">Tracker ID</string>
+    <string name="EtrackerHint">12</string>
 </resources>

@@ -31,6 +31,11 @@
             android:name=".Track"
             android:label="@string/title_activity_track" >
         </activity>
+
+        <service
+            android:name=".LocalisationPOST"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

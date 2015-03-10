@@ -68,12 +68,46 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerHorizontal="true" />
 
+
+            <ImageView
+                android:id="@+id/Iseparateur2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/Etoken"
+                android:contentDescription="@string/Sseparateur"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/divider_horizontal_textfield"
+                android:paddingLeft="10sp"
+                android:paddingRight="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/Ttracker"
+                android:id="@+id/Ttracker"
+                android:layout_below="@+id/Iseparateur2"
+                android:layout_centerHorizontal="true" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:hint="@string/EtrackerHint"
+                android:id="@+id/Etracker"
+                android:layout_below="@+id/Ttracker"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true" />
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Bgo"
                 android:id="@+id/Bgo"
-                android:layout_below="@+id/Etoken"
+                android:layout_below="@+id/Etracker"
                 android:layout_centerHorizontal="true" />
 
         </RelativeLayout>

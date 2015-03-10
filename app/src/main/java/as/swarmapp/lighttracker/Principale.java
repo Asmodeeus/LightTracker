@@ -11,31 +11,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 
 public class Principale extends ActionBarActivity implements GestionHorsUI {
     private static String   CHECK_PHRASE    = "Hello ! Everything seems fine around here ;)";
     private static String   CHECK_PAGE      = "/what";
+    private static String   PARAMS_TRACK_TOKEN = "?" + Const.TRACKER_ID + "=%s&" + Const.TOKEN + "=%s";
     private static int      SITE            = 0;
     private static int      TOKEN           = 1;
-    private static String   site_debug      = "http://t-viravau.duckdns.org:18001"; //FIXME : à retirer
-    private static String   token_debug     = "249737703537f0de5c007e30f7b009b4"; //FIXME : à retirer
+    private static int      TRACKER_ID      = 2;
+    private static String   site_debug      = "http://haggis.ensta-bretagne.fr:3000"; //FIXME : à retirer
+    private static String   token_debug     = "705907f6964d8565573dd3ee73775831"; //FIXME : à retirer
+    private static String   tracker_debug   = "12"; //FIXME : à retirer
 
     // Sémaphore interdisant d'executer plusieurs requêtes en même temps
     private boolean         requeteEnCours  = false;
     private SharedPreferences 		sharedPref;
     private EditText eSite;
     private EditText eToken;
+    private EditText eTracker;
 
     private View.OnClickListener OCLBgo = new View.OnClickListener() {
         @Override
@@ -60,10 +58,13 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         requeteEnCours = false;
 
 
-        eSite = (EditText) findViewById(R.id.Esite);
-        eToken = (EditText) findViewById(R.id.Etoken);
-        eSite.setText(sharedPref.getString(Const.PREF_SITE, "" +site_debug));
-        eToken.setText(sharedPref.getString(Const.PREF_TOKEN, "" +token_debug));
+        eSite       = (EditText) findViewById(R.id.Esite);
+        eToken      = (EditText) findViewById(R.id.Etoken);
+        eTracker    = (EditText) findViewById(R.id.Etracker);
+
+        eSite       .setText(sharedPref.getString(Const.PREF_SITE, "" + site_debug));
+        eToken      .setText(sharedPref.getString(Const.PREF_TOKEN, "" + token_debug));
+        eTracker    .setText(sharedPref.getString(Const.PREF_TRACKER, "" + tracker_debug));
 
         ((Button) findViewById(R.id.Bgo)).setOnClickListener(OCLBgo);
     }
@@ -85,7 +86,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         switch(id){
             case R.id.parametres:
                 return true;
-                //break;
+            //break;
 
             case R.id.recuperation_donnees:
                 startActivity(new Intent(Principale.this, Recuperation.class));
@@ -98,6 +99,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     public String[] donneesAreOk(){
         String site = eSite.getText().toString();
         String token = eToken.getText().toString().toLowerCase();
+        String tracker_id = eTracker.getText().toString();
         String prefixe = "http://";
 
         if (site.startsWith("http://")){
@@ -110,8 +112,13 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
 
         if (site.matches(Const.REGEX_SITE)){
             if (token.matches(Const.REGEX_TOKEN)){
-                return new String[]{prefixe + site, token};
+                if (tracker_id.matches(Const.REGEX_TRACKER_ID)){
+                    return new String[]{prefixe + site, token, tracker_id};
 
+                }else{
+                    Toast.makeText(this, String.format(Const.INVALID_,getString(R.string.Ttracker)), Toast.LENGTH_SHORT).show();
+
+                }
             }else{
                 Toast.makeText(this, String.format(Const.INVALID_,getString(R.string.Ttoken)), Toast.LENGTH_SHORT).show();
 
@@ -146,23 +153,37 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         boolean ok = false;
 
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(donnees[SITE] + CHECK_PAGE)).openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(donnees[SITE] + CHECK_PAGE + String.format(PARAMS_TRACK_TOKEN, donnees[TRACKER_ID], donnees[TOKEN]))).openConnection();
             try {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                ok = (Utiles.streamToString(in).compareTo(CHECK_PHRASE)==0);
+                int code = urlConnection.getResponseCode();
+                Log.w("aFaireHorsUI", Integer.toString(code));
+                switch(code){
+                    case HttpURLConnection.HTTP_OK:
+                        ok = true;
+                        break;
+
+                    case HttpURLConnection.HTTP_FORBIDDEN:
+
+                    case HttpURLConnection.HTTP_BAD_REQUEST:
+                        runOnUiThread(new Runnable() { public void run() {Toast.makeText(Principale.this, Const.ECHEC_AUTHENTIFICATION, Toast.LENGTH_LONG).show();}});
+                        break;
+
+                    default:
+                        runOnUiThread(new Runnable() { public void run() {Toast.makeText(Principale.this, Const.ECHEC_HTTP, Toast.LENGTH_LONG).show();}});
+                        break;
+                }
+
             }finally{
                 urlConnection.disconnect();
             }
+
         }catch (Exception e){
             e.printStackTrace();
+            runOnUiThread(new Runnable() { public void run() {Toast.makeText(Principale.this, Const.ECHEC_HTTP, Toast.LENGTH_LONG).show();}});
         }
 
         requeteEnCours = false;
-
-        if (ok)
-            return donnees;
-        else
-            return null;
+        return (ok)? donnees:null;
     }
 
     @Override
@@ -174,14 +195,12 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
                 sharedPref.edit()
                         .putString(Const.PREF_SITE, donnees[SITE])
                         .putString(Const.PREF_TOKEN, donnees[TOKEN])
-                        // TODO  ajouter le tracker_id
+                        .putString(Const.PREF_TRACKER, donnees[TRACKER_ID])
                         .apply();
 
                 startActivity(new Intent(Principale.this, Track.class).putExtra(Const.DONNEES, donnees));
 
             }});
-        }else{
-            runOnUiThread(new Runnable() { public void run() {Toast.makeText(Principale.this, Const.ECHEC_REQUETE, Toast.LENGTH_LONG).show();}});
         }
     }
 }

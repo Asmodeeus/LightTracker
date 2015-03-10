@@ -21,7 +21,7 @@ public class DAOPosition extends SQLiteOpenHelper{
     // Noms des champs de la table
     public static final String KEY = "id";
     public static final String EVENEMENT    = "event";
-    public static final String TRACKER_ID = "tracker_id";
+    public static final String TRACKER_ID   = "tracker_id";
     public static final String TOKEN        = "token";
     public static final String HORODATE     = "datetime";
     public static final String LATITUDE     = "latitude";
