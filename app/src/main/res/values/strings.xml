@@ -14,4 +14,9 @@
     <string name="recuperation">Récupération des données</string>
     <string name="Ttracker">Tracker ID</string>
     <string name="EtrackerHint">12</string>
+    <string name="Stracking">Tracking</string>
+    <string name="Spaused">Not tracking</string>
+    <string name="title_activity_reglages">Reglages</string>
+    <string name="TadressePOST">Address to POST data :</string>
+    <string name="Bvalider">Save changes</string>
 </resources>

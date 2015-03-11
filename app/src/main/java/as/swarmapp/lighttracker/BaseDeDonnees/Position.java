@@ -1,5 +1,11 @@
 package as.swarmapp.lighttracker.BaseDeDonnees;
 
+import android.location.Location;
+
+import java.util.Date;
+
+import as.swarmapp.lighttracker.Const;
+
 /**
  * Created by asmodeeus on 10/03/15.
  */
@@ -28,6 +34,10 @@ public class Position {
 
     public Position(String event, long tracker_id, String token, String datetime, float lati, float longi) {
         this(-1, event, tracker_id, token, datetime, lati, longi, true);
+    }
+
+    public static Position positionFromLocation(String event, long tracker_id, String token, Location l){
+        return new Position(event, tracker_id, token, Const.sdf.format(new Date()),(float) l.getLatitude(),(float) l.getLongitude());
     }
 
     public void setId(long id) {

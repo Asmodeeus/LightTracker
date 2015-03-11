@@ -33,9 +33,15 @@
         </activity>
 
         <service
-            android:name=".LocalisationPOST"
-            android:exported="false" >
+            android:name=".ServiceLocalisationPOST"
+            android:enabled="true"
+            android:exported="true" >
         </service>
+
+        <activity
+            android:name=".Reglages"
+            android:label="@string/title_activity_reglages" >
+        </activity>
     </application>
 
 </manifest>

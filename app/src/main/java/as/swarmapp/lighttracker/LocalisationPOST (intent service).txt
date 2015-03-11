@@ -1,9 +1,13 @@
 package as.swarmapp.lighttracker;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -12,7 +16,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -31,15 +34,8 @@ public class LocalisationPOST extends IntentService implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    public static final String ACTION_START = "as.swarmapp.lighttracker.action.START";
-    public static final String ACTION_STOP = "as.swarmapp.lighttracker.action.STOP";
 
-    // TODO: Rename parameters
-    public static final String EXTRA_ADRESSE = "as.swarmapp.lighttracker.extra.ADRESSE";
-    public static final String EXTRA_TRACKER = "as.swarmapp.lighttracker.extra.TRACKER";
-    public static final String EXTRA_TOKEN = "as.swarmapp.lighttracker.extra.TOKEN";
-
-    private boolean en_cours = true;
+    private boolean tracking = true;
 
     // Pour la localisation
     private GoogleApiClient monClient;
@@ -63,18 +59,42 @@ public class LocalisationPOST extends IntentService implements
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_START.equals(action)) {
-                adresse     = intent.getStringExtra(EXTRA_ADRESSE);
-                token       = intent.getStringExtra(EXTRA_TRACKER);
-                tracker_id  = intent.getLongExtra(EXTRA_TOKEN, -1);
-                handleStart();
+    public void onCreate(){
+        super.onCreate();
+        Log.w("onCreate", "coucou");
+        //*
+        // L'icône sera une petite loupe
+        int icon = R.drawable.ic_action_search;
+        PendingIntent contentIntent = PendingIntent.getActivity(LocalisationPOST.this, 0, new Intent(this, LocalisationPOST.class), 0);
 
-            }else if (ACTION_STOP.equals(action)) {
-                handleStop();
+        Notification notification = new NotificationCompat.Builder(this)
+                .setWhen(System.currentTimeMillis())
+                .addAction(icon, "title", contentIntent)
+                .build();
+        Log.w("onHandleIntent", "startForeground");
+        startForeground(1, notification);
+
+        //*/
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+
+        Log.w("onHandleIntent", "coucou");
+
+        if (intent != null) {
+            adresse     = intent.getStringExtra(Const.EXTRA_ADRESSE);
+            token       = intent.getStringExtra(Const.EXTRA_TOKEN);
+            tracker_id  = intent.getLongExtra(Const.EXTRA_TRACKER, -1);
+
+            if (adresse.length()!=0 && token.length()!=0 && tracker_id!=-1) {
+                //handleStart();
+
+            }else {
+                throw new ExceptionInInitializerError("Les paramètres sont incorrects");
             }
+
         }
     }
 
@@ -83,10 +103,10 @@ public class LocalisationPOST extends IntentService implements
      * parameters.
      */
     private void handleStart() {
-        en_cours = true;
+        tracking = true;
+        // TODO: Handle action start
         buildGoogleApiClient();
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
+
     }
 
     /**
@@ -94,7 +114,8 @@ public class LocalisationPOST extends IntentService implements
      * parameters.
      */
     private void handleStop() {
-        en_cours = false;
+        tracking = false;
+        stopLocationUpdates();
 
         // TODO: Handle action Baz
         throw new UnsupportedOperationException("Not yet implemented");
@@ -115,37 +136,42 @@ public class LocalisationPOST extends IntentService implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        createLocationRequest();
+        parametrerLocationRequest();
         startLocationUpdates();
     }
 
-    protected void createLocationRequest() {
+    protected void parametrerLocationRequest() {
         monLR.setInterval(5000);
         monLR.setFastestInterval(3000);
         monLR.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                monClient, monLR, this);
-
+        LocationServices.FusedLocationApi.requestLocationUpdates(monClient, monLR, this);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        // TODO report connection suspended
+        Log.w("onConnectionSuspended", " ");
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
+            Log.w("onLocationChanged", location.getLatitude() + ", "+ location.getLongitude());
             //MAJaffichage(new Position(adresse, tracker_id, token, sdf.format(new Date()), (float) location.getLatitude(), (float) location.getLongitude()));
         }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        // TODO report connection failed
+        Log.w("onConnectionFailed", " ");
+    }
 
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(monClient, this);
     }
 
 

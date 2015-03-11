@@ -1,26 +1,14 @@
 package as.swarmapp.lighttracker;
 
-import android.location.Location;
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
-import as.swarmapp.lighttracker.BaseDeDonnees.Position;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 
 public class Track extends ActionBarActivity {
@@ -29,19 +17,33 @@ public class Track extends ActionBarActivity {
     private String token = "";
     private long tracker_id = -1;
 
+    private CompoundButton.OnCheckedChangeListener OCCLtrack = new CompoundButton.OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                // The toggle is enabled
+                reprendreTracking();
+
+            } else {
+                // The toggle is disabled
+                arreterTracking();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track);
         String donnees[] = getIntent().getStringArrayExtra(Const.DONNEES);
 
-        if (donnees != null) {
-            adresse = donnees[0];
-            token = donnees[1];
-            tracker_id = Long.valueOf(donnees[2]);
+        if (donnees != null && donnees.length > 2) {
+            adresse = donnees[Principale.SITE];
+            token = donnees[Principale.TOKEN];
+            tracker_id = Long.valueOf(donnees[Principale.TRACKER_ID]);
 
-            Log.w("onCreate", adresse + ", " + token + ", " + tracker_id);
-            // TODO startIntent
+            Switch sTrack = (Switch) findViewById(R.id.Strack);
+            sTrack.setOnCheckedChangeListener(OCCLtrack);
+            demarrerTracking();
 
         }else{
             new Exception("Cette configuration n'est pas censée arriver").printStackTrace();
@@ -70,5 +72,39 @@ public class Track extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void demarrerTracking(){
+
+        Log.w("demarrerTracking", ".");
+        /*
+        Intent mIdS = new Intent(this, calisationPOST.class);
+        mIdS.setAction(Const.ACTION_START)
+                .putExtra(Const.EXTRA_ADRESSE, adresse)
+                .putExtra(Const.EXTRA_TOKEN, token)
+                .putExtra(Const.EXTRA_TRACKER, tracker_id);
+        startService(mIdS);
+
+        //*/
+        new Thread(){ public void run(){
+                startService(
+                        new Intent(Track.this.getApplicationContext(), ServiceLocalisationPOST.class).setAction(Const.ACTION_START)
+                                .putExtra(Const.EXTRA_ADRESSE, adresse)
+                                .putExtra(Const.EXTRA_TOKEN, token)
+                                .putExtra(Const.EXTRA_TRACKER, tracker_id)
+                );
+        } }.start();
+
+    }
+
+    private void reprendreTracking(){
+        Log.w("reprendreTracking", ".");
+
+    }
+
+    private void arreterTracking() {
+        Log.w("arreterTracking", ".");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.DIFFUSION_GENERALE).putExtra(Const.ACTION, Const.ACTION_STOP));
+
     }
 }

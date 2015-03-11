@@ -3,9 +3,8 @@ package as.swarmapp.lighttracker;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +17,12 @@ import java.net.URL;
 
 
 public class Principale extends ActionBarActivity implements GestionHorsUI {
-    private static String   CHECK_PHRASE    = "Hello ! Everything seems fine around here ;)";
-    private static String   CHECK_PAGE      = "/what";
-    private static String   PARAMS_TRACK_TOKEN = "?" + Const.TRACKER_ID + "=%s&" + Const.TOKEN + "=%s";
-    private static int      SITE            = 0;
-    private static int      TOKEN           = 1;
-    private static int      TRACKER_ID      = 2;
+    public static String   CHECK_PHRASE    = "Hello ! Everything seems fine around here ;)";
+    public static String   CHECK_PAGE      = "/what";
+    public static String   PARAMS_TRACK_TOKEN = "?" + Const.TRACKER_ID + "=%s&" + Const.TOKEN + "=%s";
+    public static int      SITE            = 0;
+    public static int      TOKEN           = 1;
+    public static int      TRACKER_ID      = 2;
     private static String   site_debug      = "http://haggis.ensta-bretagne.fr:3000"; //FIXME : à retirer
     private static String   token_debug     = "705907f6964d8565573dd3ee73775831"; //FIXME : à retirer
     private static String   tracker_debug   = "12"; //FIXME : à retirer
@@ -66,7 +65,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         eToken      .setText(sharedPref.getString(Const.PREF_TOKEN, "" + token_debug));
         eTracker    .setText(sharedPref.getString(Const.PREF_TRACKER, "" + tracker_debug));
 
-        ((Button) findViewById(R.id.Bgo)).setOnClickListener(OCLBgo);
+        (findViewById(R.id.Bgo)).setOnClickListener(OCLBgo);
     }
 
 
@@ -155,9 +154,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) (new URL(donnees[SITE] + CHECK_PAGE + String.format(PARAMS_TRACK_TOKEN, donnees[TRACKER_ID], donnees[TOKEN]))).openConnection();
             try {
-                int code = urlConnection.getResponseCode();
-                Log.w("aFaireHorsUI", Integer.toString(code));
-                switch(code){
+                switch(urlConnection.getResponseCode()){
                     case HttpURLConnection.HTTP_OK:
                         ok = true;
                         break;

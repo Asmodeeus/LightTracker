@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.SQLException;
-
 /**
  * Created by asmodeeus on 10/03/15.
  */
@@ -43,10 +41,16 @@ public class DAOPosition extends SQLiteOpenHelper{
     protected static SQLiteDatabase maBDD = null;
     private static DAOPosition monDAOP = null;
 
-    public DAOPosition(Context context){
+    private DAOPosition(Context context){
         super(context, NOM_BDD, null, VERSION);
     }
 
+    public static DAOPosition getInstance(Context c){
+        if (monDAOP==null){
+            monDAOP = new DAOPosition(c);
+        }
+        return monDAOP;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -132,7 +136,6 @@ public class DAOPosition extends SQLiteOpenHelper{
         close();
         return toR;
     }
-
 
 
     /*    -----------------  SELECTION      -----------------  */
