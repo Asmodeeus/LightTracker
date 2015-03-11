@@ -78,6 +78,14 @@ public class Position {
 
     @Override
     public String toString() {
+        return "[ lati=" + lati +
+                ", longi=" + longi +
+                " (" + datetime + ")]";
+    }
+
+    /*
+    @Override
+    public String toString() {
         return "Position{" +
                 "id=" + id +
                 ", event='" + event + '\'' +
@@ -89,4 +97,5 @@ public class Position {
                 ", toSend? " + toSend +
                 '}';
     }
+    //*/
 }

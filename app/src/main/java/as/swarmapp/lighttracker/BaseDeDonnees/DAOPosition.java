@@ -165,7 +165,7 @@ public class DAOPosition extends SQLiteOpenHelper{
         if (!tous){
             requSQL += " where " + A_ENVOYER + " = 1";
         }
-        Log.w("listeEvenements", requSQL);
+        //Log.w("listeEvenements", requSQL);
         Cursor c = maBDD.rawQuery(requSQL, null);
 
         if (c.moveToFirst()) {
@@ -183,11 +183,11 @@ public class DAOPosition extends SQLiteOpenHelper{
         open();
 
         ArrayList<Position> toR = new ArrayList<Position>();
-        String requSQL = "select * from " + NOM_TABLE + " where " + EVENEMENT + " LIKE " + evenement;
+        String requSQL = "SELECT * FROM " + NOM_TABLE + " WHERE " + EVENEMENT + "='" + evenement + "'";
         if (!tous){
-            requSQL += " AND where " + A_ENVOYER + " = 1";
+            requSQL += " AND  " + A_ENVOYER + " = 1";
         }
-        Log.w("listeEvenements", requSQL);
+        //Log.w("listeEvenements", requSQL);
         Cursor c = maBDD.rawQuery(requSQL, null);
 
         if (c.moveToFirst()) {

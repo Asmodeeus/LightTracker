@@ -6,9 +6,76 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="as.swarmapp.lighttracker.Recuperation">
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Sevenement" />
+
+
+    <ImageView
+        android:id="@+id/Iseparateur2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/Sevenement"
+        android:contentDescription="@string/Sseparateur"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/divider_horizontal_textfield"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Iseparateur2"
+        android:id="@+id/RLligne">
+
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CBtous"
+            android:id="@+id/CBtous"
+            android:layout_centerVertical="true" />
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:id="@+id/Iseparateur3"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/CBtous"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Bdump"
+            android:id="@+id/Bdump"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/Iseparateur3"
+            android:layout_toEndOf="@+id/Iseparateur3" />
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/Iseparateur4"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/RLligne"
+        android:contentDescription="@string/Sseparateur"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/divider_horizontal_textfield"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/LVtest" />
+        android:id="@+id/LVpositions"
+        android:layout_below="@+id/Iseparateur4" />
 
 </RelativeLayout>

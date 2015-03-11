@@ -194,10 +194,8 @@ public class ServiceLocalisationPOST extends Service implements
 
     public Boolean POSTposition(Position p){
 
-        String params = positionToURL(p);
-        Log.w("params", params);
+        String url = p.getEvent()+"?"+positionToURL(p);
         Boolean ok = false;
-
         try {
             /*
             // Version POST
@@ -216,8 +214,8 @@ public class ServiceLocalisationPOST extends Service implements
 
             //*
             // Version GET
-            Log.w("requête à ", p.getEvent());
-            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(p.getEvent()+"?"+params)).openConnection();
+            Log.w("GET", "["+url+"]");
+            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(url)).openConnection();
 
             try {
                 ok = isRequeteOK(urlConnection);
@@ -278,7 +276,9 @@ public class ServiceLocalisationPOST extends Service implements
     }
 
     public static Boolean isRequeteOK(HttpURLConnection u) throws Exception{
-        switch(u.getResponseCode()){
+        int c = u.getResponseCode();
+        Log.w("isRequeteOK", Integer.toString(c));
+        switch(c){
             case HttpURLConnection.HTTP_OK:
                 return true;
 

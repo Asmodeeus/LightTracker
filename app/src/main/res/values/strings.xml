@@ -19,4 +19,6 @@
     <string name="title_activity_reglages">Reglages</string>
     <string name="TadressePOST">Address to POST data :</string>
     <string name="Bvalider">Save changes</string>
+    <string name="Bdump">Dump</string>
+    <string name="CBtous">Dump sent data also ?</string>
 </resources>
