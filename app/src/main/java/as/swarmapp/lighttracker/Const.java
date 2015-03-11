@@ -11,10 +11,10 @@ public final class Const {
 
     public static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.FRANCE); // timestamp selon le format de Haggis. Locale.FRANCE sert à écrire les chiffres en ASCII
 
-
-    // Variables communes au serveur
-    public static final String TRACKER_ID   = "tracker_id";
+    // Variables courantes
     public static final String TOKEN        = "token";
+    public static final String TRACKER_ID   = "tracker_id";
+    public static final String ADRESSE      = "site";
 
     // Variables liées au serveur
     public static final String REGEX_SITE = "[a-zA-Z0-9][-a-zA-Z0-9]*(\\.[-a-zA-Z0-9]+)+(:[1-9][0-9]*)?"; // Vaguement fool-proof ...
@@ -27,10 +27,17 @@ public final class Const {
     public static final String ECHEC_HTTP = "Could not establish connection to server, please check the address";
     public static final String ECHEC_AUTHENTIFICATION = "Tracker id/Token were not accepted by server, please check them.";
     public static final String INVALID_ = "\"%s\" is invalid.";
-    public static final String OK_CHANGEMENTS = "Changes have been saved.   ";
+    public static final String OK_CHANGEMENTS = "Changes have been saved.";
+
+    // Sauvegardes en bundle
+    public static final String PREFIXE_BUNDLE   = PREFIXE_APP + "bundle.";
+    public static final String BUN_IS_COCHE     = PREFIXE_BUNDLE + "isChecked";
+    public static final String BUN_ADRESSE      = PREFIXE_BUNDLE + ADRESSE;
+    public static final String BUN_TOKEN        = PREFIXE_BUNDLE + TOKEN;
+    public static final String BUN_TRACKER      = PREFIXE_BUNDLE + TRACKER_ID;
 
     // Communication inter-activités
-    public static final String DONNEES = "adresse+token";
+    public static final String DONNEES          = "adresse+token";
     public static final String DIFFUSION_GENERALE= PREFIXE_APP + "BROADCAST";
 
         // Interaction avec le service ServiceLocalisationPOST
@@ -43,9 +50,9 @@ public final class Const {
 
     // Préférences
     public static final String PREFERENCES      = PREFIXE_APP + "preferences";
-    public static final String PREF_SITE        = PREFIXE_APP + "site";
-    public static final String PREF_TOKEN       = PREFIXE_APP + "token";
-    public static final String PREF_TRACKER     = PREFIXE_APP + "tracker_id";
+    public static final String PREF_SITE        = PREFIXE_APP + ADRESSE;
+    public static final String PREF_TOKEN       = PREFIXE_APP + TOKEN;
+    public static final String PREF_TRACKER     = PREFIXE_APP + TRACKER_ID;
     public static final String PREF_ADRESSE_POST= PREFIXE_APP + "adresse_POST";
 
     // Variables par défaut
