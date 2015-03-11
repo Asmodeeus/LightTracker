@@ -100,7 +100,7 @@ public class DAOPosition extends SQLiteOpenHelper{
     public boolean supprimer(long id){
         open();
 
-        // TODO
+        // TODO si besoin
         boolean toR = false;
 
         close();
@@ -113,7 +113,7 @@ public class DAOPosition extends SQLiteOpenHelper{
     public boolean modifier(long id, Position nvT){
         open();
 
-        // TODO
+        // TODO si besoin
         boolean toR = false;
 
         close();
@@ -125,7 +125,6 @@ public class DAOPosition extends SQLiteOpenHelper{
         open();
 
         String strSQL = "UPDATE " + NOM_TABLE + " SET " + A_ENVOYER + " = 0 WHERE " + KEY + " = " + Long.toString(id);
-        Log.w("setSent", strSQL); //!
 
         try {
             maBDD.execSQL(strSQL);

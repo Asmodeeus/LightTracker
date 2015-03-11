@@ -153,8 +153,7 @@ public class ServiceLocalisationPOST extends Service implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        // TODO report connection suspended
-        Log.w("onConnectionSuspended", " ");
+        Imprevus.rapporterAvertissement(Imprevus.W_API_CONNEXION_SUSPENDUE);
     }
 
     @Override
@@ -183,8 +182,7 @@ public class ServiceLocalisationPOST extends Service implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        // TODO report connection failed
-        Log.w("onConnectionFailed", " ");
+        Imprevus.rapporterErreur(Imprevus.E_API_CONNECTION_FAILED);
     }
 
     protected void stopLocationUpdates() {

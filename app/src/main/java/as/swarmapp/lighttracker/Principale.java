@@ -17,7 +17,7 @@ import java.net.URL;
 
 
 public class Principale extends ActionBarActivity implements GestionHorsUI {
-    public static String   CHECK_PHRASE    = "Hello ! Everything seems fine around here ;)";
+    //public static String   CHECK_PHRASE    = "Hello ! Everything seems fine around here ;)";
     public static String   CHECK_PAGE      = "/what";
     public static String   PARAMS_TRACK_TOKEN = "?" + Const.TRACKER_ID + "=%s&" + Const.TOKEN + "=%s";
     public static int      SITE            = 0;
