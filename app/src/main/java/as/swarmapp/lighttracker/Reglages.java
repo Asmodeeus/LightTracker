@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,7 +14,6 @@ import android.widget.Toast;
 public class Reglages extends ActionBarActivity {
     private SharedPreferences   sharedPref;
     private EditText            eAdressePOST;
-    private Button              bValider;
 
     private View.OnClickListener OCLvalider = new View.OnClickListener() {
         @Override
@@ -24,6 +22,7 @@ public class Reglages extends ActionBarActivity {
                       .putString(Const.PREF_ADRESSE_POST, eAdressePOST.getText().toString())
                       .apply();
             Toast.makeText(Reglages.this, Const.OK_CHANGEMENTS, Toast.LENGTH_SHORT).show();
+            finish();
         }
     };
 
@@ -33,12 +32,10 @@ public class Reglages extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reglages);
 
-
-        sharedPref 	    = getSharedPreferences(Const.PREFERENCES, Context.MODE_PRIVATE);
-        eAdressePOST    = (EditText)    findViewById(R.id.EadressePOST);
-        bValider        = (Button)      findViewById(R.id.Bvalider);
-        eAdressePOST.setText(sharedPref.getString(Const.PREF_ADRESSE_POST, "/listeandroid"));
-        bValider.setOnClickListener(OCLvalider);
+        sharedPref = getSharedPreferences(Const.PREFERENCES, Context.MODE_PRIVATE);
+        eAdressePOST = (EditText) findViewById(R.id.EadressePOST);
+        eAdressePOST.setText(sharedPref.getString(Const.PREF_ADRESSE_POST, Const.DEF_ADRESSE));
+        findViewById(R.id.Bvalider).setOnClickListener(OCLvalider);
     }
 
 

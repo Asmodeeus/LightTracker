@@ -31,13 +31,15 @@ public class ServiceLocalisationPOST extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private boolean tracking = true;
 
-    // Pour la localisation
-    private GoogleApiClient monClient;
-    private LocationRequest monLR = new LocationRequest();
+    public static ServiceLocalisationPOST leService;
 
     // Pour le HTTP
     public static final String FORMAT_PARAM_ = "%s=%s&";
     public static final String LISTE_ = "liste[%s]";
+
+    // Pour la localisation
+    private GoogleApiClient monClient;
+    private LocationRequest monLR = new LocationRequest();
 
     // Pour la BDD
     private DAOPosition monDAO = DAOPosition.getInstance(this);
@@ -50,6 +52,20 @@ public class ServiceLocalisationPOST extends Service implements
     public ServiceLocalisationPOST() {
     }
 
+    public static void setInstance(ServiceLocalisationPOST slp) throws AssertionError{
+        if (leService!=null && leService.tracking){
+            throw new AssertionError("Un autre service est déjà en cours de tracking");
+        }
+        leService = slp;
+    }
+
+    public static ServiceLocalisationPOST getInstance() throws NullPointerException{
+        if (leService != null) {
+            return leService;
+        }
+        throw new NullPointerException("Aucun service n'existe");
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -58,37 +74,25 @@ public class ServiceLocalisationPOST extends Service implements
     @Override
      public int onStartCommand(Intent intent, int flags, int startId) {
         // Fonction executée lors de l'appel à startService()
+        try {
+            setInstance(this);
+        }catch(AssertionError e){
+            return super.onStartCommand(intent, flags, startId);
+        }
 
         if (intent != null) {
-            adresse     = intent.getStringExtra(Const.EXTRA_ADRESSE);
+            adresse     = intent.getStringExtra(Const.EXTRA_ADRESSE); // adresse à laquelle envoyer les données, directement
             token       = intent.getStringExtra(Const.EXTRA_TOKEN);
             tracker_id  = intent.getLongExtra(Const.EXTRA_TRACKER, -1);
 
             if (adresse.length()!=0 && token.length()!=0 && tracker_id!=-1) {
-                //*FIXME
-                handleStart(); //paused for debug
-                //*/
+                startTracking();
 
             }else {
                 throw new ExceptionInInitializerError("Les paramètres sont incorrects");
             }
 
         }
-
-        /*
-        mlocListener = new MyLocationListener();
-
-
-        handlerThread = new HandlerThread("MyHandlerThread");
-        handlerThread.start();
-        looper = handlerThread.getLooper();
-
-
-
-
-
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener, looper);
-        //*/
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -96,9 +100,14 @@ public class ServiceLocalisationPOST extends Service implements
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleStart() {
-        tracking = true;
-        buildGoogleApiClient();
+    public void startTracking() {
+        if (tracker_id != -1) {
+            Log.w("start", "Tracking");
+            tracking = true;
+            buildGoogleApiClient();
+        }else{
+            throw new IllegalStateException("Le service n'est pas prêt");
+        }
 
     }
 
@@ -106,12 +115,11 @@ public class ServiceLocalisationPOST extends Service implements
      * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
-    private void handleStop() {
+    public void stopTracking() {
+        Log.w("stop", "Tracking");
         tracking = false;
         stopLocationUpdates();
-
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+        stopSelf();
     }
 
 
@@ -211,7 +219,7 @@ public class ServiceLocalisationPOST extends Service implements
             //*
             // Version GET
             Log.w("requête à ", p.getEvent());
-            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(p.getEvent()+"/listeandroid?"+params)).openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(p.getEvent()+"?"+params)).openConnection();
 
             try {
                 ok = isRequeteOK(urlConnection);

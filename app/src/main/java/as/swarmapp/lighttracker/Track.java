@@ -1,6 +1,8 @@
 package as.swarmapp.lighttracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -16,12 +18,13 @@ public class Track extends ActionBarActivity {
     private String adresse = "";
     private String token = "";
     private long tracker_id = -1;
+    private SharedPreferences sharedPref;
 
     private CompoundButton.OnCheckedChangeListener OCCLtrack = new CompoundButton.OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
                 // The toggle is enabled
-                reprendreTracking();
+                demarrerTracking();
 
             } else {
                 // The toggle is disabled
@@ -34,10 +37,13 @@ public class Track extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track);
+
+        // Récupération des SharedPreferences (qui donnent les données pré-remplies)
+        sharedPref 	= getSharedPreferences(Const.PREFERENCES, Context.MODE_PRIVATE);
         String donnees[] = getIntent().getStringArrayExtra(Const.DONNEES);
 
         if (donnees != null && donnees.length > 2) {
-            adresse = donnees[Principale.SITE];
+            adresse = donnees[Principale.SITE]+sharedPref.getString(Const.PREF_ADRESSE_POST, Const.DEF_ADRESSE);
             token = donnees[Principale.TOKEN];
             tracker_id = Long.valueOf(donnees[Principale.TRACKER_ID]);
 
@@ -49,6 +55,14 @@ public class Track extends ActionBarActivity {
             new Exception("Cette configuration n'est pas censée arriver").printStackTrace();
             finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        arreterTracking();
+
+        // Otherwise defer to system default behavior.
+        super.onBackPressed();
     }
 
 
@@ -75,17 +89,6 @@ public class Track extends ActionBarActivity {
     }
 
     private void demarrerTracking(){
-
-        Log.w("demarrerTracking", ".");
-        /*
-        Intent mIdS = new Intent(this, calisationPOST.class);
-        mIdS.setAction(Const.ACTION_START)
-                .putExtra(Const.EXTRA_ADRESSE, adresse)
-                .putExtra(Const.EXTRA_TOKEN, token)
-                .putExtra(Const.EXTRA_TRACKER, tracker_id);
-        startService(mIdS);
-
-        //*/
         new Thread(){ public void run(){
                 startService(
                         new Intent(Track.this.getApplicationContext(), ServiceLocalisationPOST.class).setAction(Const.ACTION_START)
@@ -97,14 +100,9 @@ public class Track extends ActionBarActivity {
 
     }
 
-    private void reprendreTracking(){
-        Log.w("reprendreTracking", ".");
-
-    }
-
     private void arreterTracking() {
         Log.w("arreterTracking", ".");
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.DIFFUSION_GENERALE).putExtra(Const.ACTION, Const.ACTION_STOP));
-
+        ServiceLocalisationPOST.getInstance().stopTracking();
     }
 }

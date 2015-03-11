@@ -3,7 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="Sseparateur">Séparateur visuel</string>
+    <string name="Sseparateur">Visual separator</string>
     <string name="Bgo">Go tracking !</string>
     <string name="Tsite">Website address</string>
     <string name="EsiteHint">www.example.com</string>
@@ -11,7 +11,7 @@
     <string name="EtokenHint">0123456789abcdef</string>
     <string name="title_activity_recuperation">Recuperation</string>
     <string name="title_activity_track">Track</string>
-    <string name="recuperation">Récupération des données</string>
+    <string name="recuperation">Database dump</string>
     <string name="Ttracker">Tracker ID</string>
     <string name="EtrackerHint">12</string>
     <string name="Stracking">Tracking</string>

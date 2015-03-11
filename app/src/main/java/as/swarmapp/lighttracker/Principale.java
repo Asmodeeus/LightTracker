@@ -84,6 +84,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         int id = item.getItemId();
         switch(id){
             case R.id.parametres:
+                startActivity(new Intent(this, Reglages.class));
                 return true;
             //break;
 

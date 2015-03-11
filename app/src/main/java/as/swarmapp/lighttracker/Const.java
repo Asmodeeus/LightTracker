@@ -47,4 +47,7 @@ public final class Const {
     public static final String PREF_TOKEN       = PREFIXE_APP + "token";
     public static final String PREF_TRACKER     = PREFIXE_APP + "tracker_id";
     public static final String PREF_ADRESSE_POST= PREFIXE_APP + "adresse_POST";
+
+    // Variables par défaut
+    public static final String DEF_ADRESSE      = "/listeandroid";
 }
