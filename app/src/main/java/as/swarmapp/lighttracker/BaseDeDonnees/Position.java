@@ -75,4 +75,18 @@ public class Position {
     public boolean isToSend() {
         return toSend;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "id=" + id +
+                ", event='" + event + '\'' +
+                ", tracker_id=" + tracker_id +
+                ", token='" + token + '\'' +
+                ", datetime='" + datetime + '\'' +
+                ", lati=" + lati +
+                ", longi=" + longi +
+                ", toSend? " + toSend +
+                '}';
+    }
 }

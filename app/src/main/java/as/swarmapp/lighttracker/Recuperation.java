@@ -4,14 +4,21 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
 
 
 public class Recuperation extends ActionBarActivity {
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recuperation);
+
+        lv = (ListView) findViewById(R.id.LVtest);
+        lv.setAdapter(new AdaptateurListeSimple(this, DAOPosition.getInstance(this).listeEvenements(true)));
     }
 
 

@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by asmodeeus on 10/03/15.
  */
@@ -149,6 +152,52 @@ public class DAOPosition extends SQLiteOpenHelper{
             toR =  new Position(c.getLong(0), c.getString(1), c.getLong(2), c.getString(3), c.getString(4), c.getFloat(5), c.getFloat(6), (c.getLong(7)!=0) );
 
         close();
+        c.close();
+        return toR;
+    }
+
+
+    public List<String> listeEvenements(boolean tous){
+        open();
+
+        ArrayList<String> toR = new ArrayList<String>();
+        String requSQL = "select DISTINCT " + EVENEMENT + " from " + NOM_TABLE;
+        if (!tous){
+            requSQL += " where " + A_ENVOYER + " = 1";
+        }
+        Log.w("listeEvenements", requSQL);
+        Cursor c = maBDD.rawQuery(requSQL, null);
+
+        if (c.moveToFirst()) {
+            do {
+                toR.add(c.getString(0));
+            } while (c.moveToNext());
+        }
+
+        close();
+        c.close();
+        return toR;
+    }
+
+    public List<Position> listePosition(String evenement, boolean tous){
+        open();
+
+        ArrayList<Position> toR = new ArrayList<Position>();
+        String requSQL = "select * from " + NOM_TABLE + " where " + EVENEMENT + " LIKE " + evenement;
+        if (!tous){
+            requSQL += " AND where " + A_ENVOYER + " = 1";
+        }
+        Log.w("listeEvenements", requSQL);
+        Cursor c = maBDD.rawQuery(requSQL, null);
+
+        if (c.moveToFirst()) {
+            do {
+                toR.add(new Position(c.getLong(0), c.getString(1), c.getLong(2), c.getString(3), c.getString(4), c.getFloat(5), c.getFloat(6), (c.getLong(7)!=0) ));
+            } while (c.moveToNext());
+        }
+
+        close();
+        c.close();
         return toR;
     }
 }
