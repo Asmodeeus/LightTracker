@@ -10,14 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
@@ -39,11 +35,11 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
 
             new Thread(new Runnable() { public void run() {
 
-                final List<String> lesPos = Utiles.listePositionToString(DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked()));
+                lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
                 if (!lesPos.isEmpty()) {
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, lesPos));
+                            lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
                         }
                     });
                 }
@@ -66,7 +62,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
                 if (!lesPos.isEmpty()) {
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToString(lesPos)));
+                            lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
                         }
                     });
                 }
@@ -77,34 +73,39 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
     private View.OnClickListener OCLdump = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //new Thread(new Runnable() { public void run() {
-            if (!écritureEnCours) {
-                écritureEnCours = true;
+            if (lesPos==null || lesPos.isEmpty()){
+                Utiles.toastLong(Recuperation.this, Const.ECHEC);
+                return;
+            }
+            new Thread(new Runnable() { public void run() {
+                if (!écritureEnCours) {
+                    écritureEnCours = true;
 
-                try {
-                    File fichierDump = Utiles.getUnFichierDeDump();
-                    String s = "coucou";
-                    FileOutputStream os = new FileOutputStream(fichierDump);
-                    os.write(s.getBytes()); //TODO
-                    os.close();
+                    try {
+                        FileOutputStream os = new FileOutputStream(Utiles.getUnFichierDeDump());
+                        os.write(Utiles.listePositionToStringForDump(lesPos).getBytes());
+                        os.close();
 
-                } catch (FileNotFoundException e) {
-                    Toast.makeText(Recuperation.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (FileNotFoundException e) {
+                        Utiles.toastLong(Recuperation.this, e.getMessage());
 
-                } catch (IOException e) {
-                    Toast.makeText(Recuperation.this, Const.ECHEC_IO, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Utiles.toastLong(Recuperation.this, Const.ECHEC_IO);
+
+                    }finally{
+                        écritureEnCours = false;
+
+                    }
+                }else{
+                    Utiles.toastLong(Recuperation.this, Const.DUMP_PENDING);
 
                 }
-            }else{
-                Toast.makeText(Recuperation.this, Const.DUMP_PENDING, Toast.LENGTH_SHORT).show();
+            } }).start();
+        }
+    };
 
-            }
-        //} }).start();
-    }
-};
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recuperation);
 
@@ -114,18 +115,18 @@ protected void onCreate(Bundle savedInstanceState) {
         cbTous.setOnClickListener(OCLcbTous);
         (findViewById(R.id.Bdump)).setOnClickListener(OCLdump);
         MAJaffichage(null);
-        }
+    }
 
 
-@Override
-public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_recuperation, menu);
         return true;
-        }
+    }
 
-@Override
-public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -133,53 +134,53 @@ public boolean onOptionsItemSelected(MenuItem item) {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-        return true;
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
-        }
+    }
 
-@Override
-public void MAJaffichage(final Object o) {
+    @Override
+    public void MAJaffichage(final Object o) {
         new Thread(new Runnable() { public void run() {
-        // aFaireHorsUI nous dit si l'on doit afficher le layout normal ou passer directement à une autre activité
-        Object params = aFaireHorsUI(o);
-        aFaireEnUI(params);
+            // aFaireHorsUI nous dit si l'on doit afficher le layout normal ou passer directement à une autre activité
+            Object params = aFaireHorsUI(o);
+            aFaireEnUI(params);
 
         } }).start();
-        }
+    }
 
-@Override
-public Object aFaireHorsUI(Object o) {
+    @Override
+    public Object aFaireHorsUI(Object o) {
         List<String> lesEvenements = (DAOPosition.getInstance(Recuperation.this).listeEvenements(cbTous.isChecked()));
         if (lesEvenements.isEmpty()) {
-        // S'il n'y a aucun évènement dans la BDD, on return null
-        return null;
+            // S'il n'y a aucun évènement dans la BDD, on return null
+            return null;
 
         }else {
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Recuperation.this, android.R.layout.simple_spinner_item, lesEvenements);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Recuperation.this, android.R.layout.simple_spinner_item, lesEvenements);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        return dataAdapter;
+            return dataAdapter;
         }
-        }
+    }
 
-@Override
-public void aFaireEnUI(final Object lAdapteur) {
+    @Override
+    public void aFaireEnUI(final Object lAdapteur) {
 
         runOnUiThread(new Runnable() { public void run() {
 
-        if (lAdapteur == null) {
-        // Aucun évènement n'est dans la base de données, on charge l'activité d'ajout d'un évènement
-        lvTest.setVisibility(View.INVISIBLE);
+            if (lAdapteur == null) {
+                // Aucun évènement n'est dans la base de données, on charge l'activité d'ajout d'un évènement
+                lvTest.setVisibility(View.INVISIBLE);
 
-        }else{
-        // Il y a des évènements dans la BDD, l'affichage est celui auquel on s'attend
-        sEvenement.setAdapter((ArrayAdapter<String>) lAdapteur);
-        sEvenement.setOnItemSelectedListener(selectionEvenement);
+            }else{
+                // Il y a des évènements dans la BDD, l'affichage est celui auquel on s'attend
+                sEvenement.setAdapter((ArrayAdapter<String>) lAdapteur);
+                sEvenement.setOnItemSelectedListener(selectionEvenement);
 
-        }
+            }
 
         }});
-        }
-        }
+    }
+}

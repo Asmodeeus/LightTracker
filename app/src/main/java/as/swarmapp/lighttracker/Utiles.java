@@ -1,6 +1,8 @@
 package as.swarmapp.lighttracker;
 
+import android.app.Activity;
 import android.os.Environment;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,12 +39,25 @@ public final class Utiles {
         return sb.toString();
     }
 
-    public static List<String> listePositionToString(List<Position> lp){
+    public static List<String> listePositionToListeString(List<Position> lp){
         List<String> toR = new ArrayList<String>();
         for (Position p:lp){
             toR.add(p.toString());
         }
         return toR;
+    }
+
+    public static String listePositionToString(List<Position> lp, String separateur){
+        List<String> lS = listePositionToListeString(lp);
+        String toR = lS.remove(0);
+        for (String s:lS){
+            toR = toR + separateur + s;
+        }
+        return toR;
+    }
+
+    public static String listePositionToStringForDump(List<Position> lp){
+        return listePositionToString(lp, "</br>");
     }
 
     public static boolean isExternalStorageWritable() {
@@ -71,5 +86,32 @@ public final class Utiles {
         }else{
             throw new FileNotFoundException(Const.ECHEC_ACCES_SD);
         }
+    }
+
+    private static void toast(final Activity c, final String message, final int longueur){
+        c.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(c, message, longueur).show();
+            }
+        });
+    }
+
+    /** Affiche un toast de longueur LENGTH_SHORT sur le Thread UI : peut être utilisé dans un autre thread
+     *
+     * @param c         : l'activité invoquante
+     * @param message   : le message du Toast
+     */
+    public static void toastCourt(Activity c, String message){
+        toast(c, message, Toast.LENGTH_SHORT);
+    }
+
+    /** Affiche un toast de longueur LENGTH_LONG sur le Thread UI : peut être utilisé dans un autre thread
+     *
+     * @param c         : l'activité invoquante
+     * @param message   : le message du Toast
+     */
+    public static void toastLong(Activity c, String message){
+        toast(c, message, Toast.LENGTH_LONG);
     }
 }

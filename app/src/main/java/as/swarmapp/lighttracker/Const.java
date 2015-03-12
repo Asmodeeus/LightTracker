@@ -16,6 +16,7 @@ public final class Const {
     public static final String TOKEN        = "token";
     public static final String TRACKER_ID   = "tracker_id";
     public static final String ADRESSE      = "site";
+    public static final String CHAR_SEP         = " | ";
 
     // Variables liées au serveur
     public static final String REGEX_SITE = "[a-zA-Z0-9][-a-zA-Z0-9]*(\\.[-a-zA-Z0-9]+)+(:[1-9][0-9]*)?"; // Vaguement fool-proof ... le http(s):// a été retiré avant le test et est rajouté après
@@ -34,6 +35,7 @@ public final class Const {
     public static final String ERR_DOSSIER_DUMP     = ERREUR + "dump directory cannot be created.";
     public static final String ECHEC_IO             = ERREUR + "file cannot be written";
     public static final String ECHEC_ACCES_SD       = "Please check that SD card is mounted";
+    public static final String ECHEC                = "Something went wrong, please try again.";
 
     // Sauvegardes en bundle
     public static final String PREFIXE_BUNDLE   = PREFIXE_APP + "bundle.";

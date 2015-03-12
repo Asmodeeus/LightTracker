@@ -85,8 +85,8 @@ public class Position {
         }catch(ParseException e){
             e.printStackTrace();
         }
-        return "[ lati=" + lati +
-                ", longi=" + longi +
+        return "[ latitude=" + lati +
+                ", longitude=" + longi +
                 " (" + horodate + ")]";
     }
 
