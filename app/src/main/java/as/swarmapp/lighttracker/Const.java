@@ -31,11 +31,12 @@ public final class Const {
     public static final String ECHEC_AUTH           = "Tracker id/Token were not accepted by server, please check them.";
     public static final String INVALID_             = "\"%s\" is invalid.";
     public static final String OK_CHANGEMENTS       = "Changes have been saved.";
-    public static final String DUMP_PENDING         = "Still processing dumping ...";
     public static final String ERR_DOSSIER_DUMP     = ERREUR + "dump directory cannot be created.";
     public static final String ECHEC_IO             = ERREUR + "file cannot be written";
     public static final String ECHEC_ACCES_SD       = "Please check that SD card is mounted";
     public static final String ECHEC                = "Something went wrong, please try again.";
+    public static final String PROCESS_DUMP         = "Starting database dump.";
+    public static final String DUMP_PENDING         = "Still processing dump ...";
 
     // Sauvegardes en bundle
     public static final String PREFIXE_BUNDLE   = PREFIXE_APP + "bundle.";

@@ -2,6 +2,7 @@ package as.swarmapp.lighttracker;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,12 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
     private String lEvenement;
     private List<Position> lesPos;
     private boolean écritureEnCours;
+    private Runnable rafraichirListe = new Runnable() {
+        public void run() {
+            if (lvTest!=null)
+                lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
+        }
+    };
     private AdapterView.OnItemSelectedListener selectionEvenement = new AdapterView.OnItemSelectedListener(){
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -37,12 +44,8 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
 
                 lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
                 if (!lesPos.isEmpty()) {
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
-                        }
-                    });
-                }
+                    runOnUiThread(rafraichirListe);
+                } //TODO : la liste ne se rafraichit pas lorsqu'il y a 0 positions toSend
 
             } }).start();
 
@@ -60,11 +63,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
 
                 lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
                 if (!lesPos.isEmpty()) {
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
-                        }
-                    });
+                    runOnUiThread(rafraichirListe);
                 }
 
             } }).start();
@@ -80,17 +79,23 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
             new Thread(new Runnable() { public void run() {
                 if (!écritureEnCours) {
                     écritureEnCours = true;
+                    Utiles.toastLong(Recuperation.this, Const.PROCESS_DUMP);
 
                     try {
                         FileOutputStream os = new FileOutputStream(Utiles.getUnFichierDeDump());
                         os.write(Utiles.listePositionToStringForDump(lesPos).getBytes());
                         os.close();
+                        if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement))
+                            Log.w("K", "coucou");
+                        runOnUiThread(rafraichirListe);
+
 
                     } catch (FileNotFoundException e) {
                         Utiles.toastLong(Recuperation.this, e.getMessage());
 
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Utiles.toastLong(Recuperation.this, Const.ECHEC_IO);
+                        e.printStackTrace();
 
                     }finally{
                         écritureEnCours = false;
@@ -99,6 +104,13 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
                 }else{
                     Utiles.toastLong(Recuperation.this, Const.DUMP_PENDING);
 
+                }
+                synchronized (this) {
+                    try {
+                        wait(1000); //évite le double clic
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             } }).start();
         }
@@ -152,7 +164,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
 
     @Override
     public Object aFaireHorsUI(Object o) {
-        List<String> lesEvenements = (DAOPosition.getInstance(Recuperation.this).listeEvenements(cbTous.isChecked()));
+        List<String> lesEvenements = (DAOPosition.getInstance(Recuperation.this).listeEvenements());
         if (lesEvenements.isEmpty()) {
             // S'il n'y a aucun évènement dans la BDD, on return null
             return null;

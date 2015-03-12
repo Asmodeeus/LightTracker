@@ -157,14 +157,11 @@ public class DAOPosition extends SQLiteOpenHelper{
     }
 
 
-    public List<String> listeEvenements(boolean tous){
+    public List<String> listeEvenements(){
         open();
 
         ArrayList<String> toR = new ArrayList<String>();
         String requSQL = "select DISTINCT " + EVENEMENT + " from " + NOM_TABLE;
-        if (!tous){
-            requSQL += " where " + A_ENVOYER + " = 1";
-        }
         //Log.w("listeEvenements", requSQL);
         Cursor c = maBDD.rawQuery(requSQL, null);
 
@@ -198,6 +195,23 @@ public class DAOPosition extends SQLiteOpenHelper{
 
         close();
         c.close();
+        return toR;
+    }
+
+    public boolean setAllSent(String lEvenement) {
+        boolean toR;
+        open();
+
+        String strSQL = "UPDATE " + NOM_TABLE + " SET " + A_ENVOYER + " = 0 WHERE " + EVENEMENT + " ='" + lEvenement + "'";
+        Log.w("setAllSent", strSQL);
+
+        try {
+            maBDD.execSQL(strSQL);
+            toR = true;
+        }catch(android.database.SQLException e){
+            toR = false;
+        }
+        close();
         return toR;
     }
 }
