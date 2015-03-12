@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -163,7 +162,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
                     case HttpURLConnection.HTTP_FORBIDDEN:
 
                     case HttpURLConnection.HTTP_BAD_REQUEST:
-                        runOnUiThread(new Runnable() { public void run() {Toast.makeText(Principale.this, Const.ECHEC_AUTHENTIFICATION, Toast.LENGTH_LONG).show();}});
+                        runOnUiThread(new Runnable() { public void run() {Toast.makeText(Principale.this, Const.ECHEC_AUTH, Toast.LENGTH_LONG).show();}});
                         break;
 
                     default:

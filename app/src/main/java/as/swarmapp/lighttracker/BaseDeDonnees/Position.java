@@ -2,6 +2,7 @@ package as.swarmapp.lighttracker.BaseDeDonnees;
 
 import android.location.Location;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import as.swarmapp.lighttracker.Const;
@@ -37,7 +38,7 @@ public class Position {
     }
 
     public static Position positionFromLocation(String event, long tracker_id, String token, Location l){
-        return new Position(event, tracker_id, token, Const.sdf.format(new Date()),(float) l.getLatitude(),(float) l.getLongitude());
+        return new Position(event, tracker_id, token, Const.SDFrequetes.format(new Date()),(float) l.getLatitude(),(float) l.getLongitude());
     }
 
     public void setId(long id) {
@@ -78,9 +79,15 @@ public class Position {
 
     @Override
     public String toString() {
+        String horodate = datetime;
+        try{
+            horodate = Const.SDFbdd.format(Const.SDFrequetes.parse(datetime));
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
         return "[ lati=" + lati +
                 ", longi=" + longi +
-                " (" + datetime + ")]";
+                " (" + horodate + ")]";
     }
 
     /*

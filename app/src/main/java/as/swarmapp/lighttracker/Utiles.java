@@ -1,9 +1,14 @@
 package as.swarmapp.lighttracker;
 
+import android.os.Environment;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import as.swarmapp.lighttracker.BaseDeDonnees.Position;
@@ -38,5 +43,33 @@ public final class Utiles {
             toR.add(p.toString());
         }
         return toR;
+    }
+
+    public static boolean isExternalStorageWritable() {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public static File getUnFichierDeDump() throws FileNotFoundException   {
+        if (isExternalStorageWritable()) {
+            //  Récupère le dossier à l'emplacement par défaut du dossier "documents"
+            File dossierDumps = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Const.DOSSIER_DUMPS);
+
+            // Créer le dossier s'il n'existe pas
+            if (!dossierDumps.exists()) {
+                if (!dossierDumps.mkdirs()) {
+                    throw new FileNotFoundException(Const.ERR_DOSSIER_DUMP);
+                }
+            }
+            File fichier = new File(dossierDumps.getPath() + File.separator + "dump" + Const.SDFrequetes.format(new Date()) + ".txt");
+
+
+            return fichier;
+        }else{
+            throw new FileNotFoundException(Const.ECHEC_ACCES_SD);
+        }
     }
 }

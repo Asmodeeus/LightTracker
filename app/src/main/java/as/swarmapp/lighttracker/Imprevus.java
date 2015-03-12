@@ -48,4 +48,6 @@ public class Imprevus {
         erreurs = 0L;
         avert = 0;
     }
+
+    //TODO : créer une fonction qui retourne une liste de string avec le nom de l'erreur, ou " " si pas d'erreur
 }
