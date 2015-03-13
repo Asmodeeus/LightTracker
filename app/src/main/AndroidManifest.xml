@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".Recuperation"
-            android:label="@string/title_activity_recuperation" >
+            android:label="@string/title_activity_recuperation">
         </activity>
         <activity
             android:name=".Track"
@@ -37,7 +37,8 @@
         <service
             android:name=".ServiceLocalisationPOST"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="false"
+            android:launchMode="singleInstance">
         </service>
 
         <activity

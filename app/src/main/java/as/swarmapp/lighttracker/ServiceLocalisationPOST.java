@@ -1,10 +1,13 @@
 package as.swarmapp.lighttracker;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -102,9 +105,29 @@ public class ServiceLocalisationPOST extends Service implements
      */
     public void startTracking() {
         if (tracker_id != -1) {
-            Log.w("start", "Tracking");
+            Log.i("ServiceLocalisationPOST", "Start tracking");
             tracking = true;
             buildGoogleApiClient();
+
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, Track.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_UPDATE_CURRENT);
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentTitle("LightTracker")
+                    .setContentText("Background tracking enabled")
+                    .setSmallIcon(R.drawable.ic_service_track)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentIntent(contentIntent)
+                    .build();
+            startForeground(1, notification);
+            /*
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, class), 0);
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setWhen(System.currentTimeMillis())
+                    .addAction(R.drawable.ic_action_search, "title", contentIntent)
+                    .build();
+            Log.w("onHandleIntent", "startForeground");
+            startForeground(1, notification);
+            //*/
+
         }else{
             throw new IllegalStateException("Le service n'est pas prêt");
         }
@@ -116,9 +139,10 @@ public class ServiceLocalisationPOST extends Service implements
      * parameters.
      */
     public void stopTracking() {
-        Log.w("stop", "Tracking");
+        Log.i("ServiceLocalisationPOST", "Stop tracking");
         tracking = false;
         stopLocationUpdates();
+        stopForeground(true);
         stopSelf();
     }
 
@@ -161,7 +185,7 @@ public class ServiceLocalisationPOST extends Service implements
         if (location != null) {
 
             new Thread(){ public void run(){
-                Log.w("onLocationChanged", location.getLatitude() + ", "+ location.getLongitude());
+                Log.i("onLocationChanged", location.getLatitude() + ", "+ location.getLongitude());
 
                 // On crée une nouvelle position à partir de la localisation
                 Position laPos = Position.positionFromLocation(adresse, tracker_id, token, location);
@@ -194,26 +218,30 @@ public class ServiceLocalisationPOST extends Service implements
 
     public Boolean POSTposition(Position p){
 
-        String url = p.getEvent()+"?"+positionToURL(p);
+        String url = p.getEvent();
+        String params = positionToURL(p);
         Boolean ok = false;
         try {
-            /*
+            //*
             // Version POST
-            HttpURLConnection urlConnection = (HttpURLConnection) (new URL("http://haggis.ensta-bretagne.fr:3000/listeandroid")).openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(url)).openConnection();
             int longueurParams = params.getBytes().length;
             preparerPourPOST(urlConnection, longueurParams);
 
             try {
                 paramsPOST(urlConnection, params);
-                ok = reponseRequetePOST(urlConnection);
+                ok = isRequeteOK(urlConnection);
+                //ok = reponseRequetePOST(urlConnection);
+
 
             }finally{
                 urlConnection.disconnect();
             }
             //*/
 
-            //*
+            /*
             // Version GET
+            url = url + "?" + params;
             Log.w("GET", "["+url+"]");
             HttpURLConnection urlConnection = (HttpURLConnection) (new URL(url)).openConnection();
 
@@ -277,19 +305,21 @@ public class ServiceLocalisationPOST extends Service implements
 
     public static Boolean isRequeteOK(HttpURLConnection u) throws Exception{
         int c = u.getResponseCode();
-        Log.w("isRequeteOK", Integer.toString(c));
         switch(c){
             case HttpURLConnection.HTTP_OK:
                 return true;
 
             case HttpURLConnection.HTTP_BAD_REQUEST:
                 Imprevus.rapporterErreur(Imprevus.E_BAD_REQUEST);
+                break;
 
             case HttpURLConnection.HTTP_UNAVAILABLE:
                 Imprevus.rapporterErreur(Imprevus.E_SERVICE_UNAVAILABLE);
+                break;
 
             default:
                 Imprevus.rapporterErreur(Imprevus.INCONNUE);
+                break;
 
         }
         return false;

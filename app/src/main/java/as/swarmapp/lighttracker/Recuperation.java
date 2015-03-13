@@ -43,21 +43,21 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
             }
         }
     };
+    private Runnable miseAJourListe = new Runnable() {
+        public void run() {
+            lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
+            runOnUiThread(rafraichirListe);
+        }
+    };
     private AdapterView.OnItemSelectedListener selectionEvenement = new AdapterView.OnItemSelectedListener(){
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             //Toast.makeText(Recuperation.this, "onItemSelected", Toast.LENGTH_SHORT).show();
             lEvenement = parent.getItemAtPosition(position).toString();
 
-            new Thread(new Runnable() { public void run() {
-
-                lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
-                runOnUiThread(rafraichirListe);
-
-            } }).start();
+            new Thread(miseAJourListe).start();
 
         }
-
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
             Toast.makeText(Recuperation.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
@@ -66,12 +66,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
     private View.OnClickListener OCLcbTous = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new Thread(new Runnable() { public void run() {
-
-                lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
-                runOnUiThread(rafraichirListe);
-
-            } }).start();
+            new Thread(miseAJourListe).start();
         }
     };
     private View.OnClickListener OCLdump = new View.OnClickListener() {
@@ -93,8 +88,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
                         if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement)){
                             Utiles.toastLong(Recuperation.this, Const.ECHEC_BDD);
                         }
-                        runOnUiThread(rafraichirListe);
-
+                        new Thread(miseAJourListe).start();
 
                     } catch (FileNotFoundException e) {
                         Utiles.toastLong(Recuperation.this, e.getMessage());
