@@ -2,6 +2,7 @@ package as.swarmapp.lighttracker;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +22,7 @@ import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
 import as.swarmapp.lighttracker.BaseDeDonnees.Position;
 
 
-public class Recuperation extends ActionBarActivity implements GestionHorsUI {
+public class Recuperation extends ActionBarActivity implements GestionHorsUI, FragmentDialogue.FragmentDialogueListener {
     private Spinner sEvenement;
     private ListView lvTest;
     private TextView tRien;
@@ -72,6 +73,59 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
     private View.OnClickListener OCLdump = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            // Création du dialogue
+            FragmentDialogue frag = new FragmentDialogue();
+
+            // Paramétrage
+            Bundle arguments = new Bundle();
+            arguments.putInt(Const.BUN_TYPE_FRAG, -1);
+            frag.setArguments(arguments);
+
+            // Affichage
+            frag.show( getSupportFragmentManager(), Const.TAG_DUMP);
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recuperation);
+
+        lvTest      = (ListView) findViewById(R.id.LVpositions);
+        sEvenement  = (Spinner)findViewById(R.id.Sevenement);
+        cbTous      = (CheckBox) findViewById(R.id.CBtous);
+        tRien       = (TextView) findViewById(R.id.TrienAAfficher);
+        cbTous.setOnClickListener(OCLcbTous);
+        (findViewById(R.id.Bdump)).setOnClickListener(OCLdump);
+        MAJaffichage(null);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_recuperation, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void choixDialogue(int bouton, String donnees) {
+        if (bouton==Const.BtnFICHIER){
             if (lesPos==null || lesPos.isEmpty()){
                 Utiles.toastLong(Recuperation.this, Const.ECHEC);
                 return;
@@ -113,44 +167,12 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
                     }
                 }
             } }).start();
+
+        } else if(bouton==Const.BtnPOST) {
+            // Effectuer un POST sur le serveur
+            //TODO Effectuer un POST sur le serveur
+            Log.w("TODO", "j'effectue un POST sur le serveur");
         }
-    };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recuperation);
-
-        lvTest      = (ListView) findViewById(R.id.LVpositions);
-        sEvenement  = (Spinner)findViewById(R.id.Sevenement);
-        cbTous      = (CheckBox) findViewById(R.id.CBtous);
-        tRien       = (TextView) findViewById(R.id.TrienAAfficher);
-        cbTous.setOnClickListener(OCLcbTous);
-        (findViewById(R.id.Bdump)).setOnClickListener(OCLdump);
-        MAJaffichage(null);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_recuperation, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

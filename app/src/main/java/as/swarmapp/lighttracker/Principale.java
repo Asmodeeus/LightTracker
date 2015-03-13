@@ -41,6 +41,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
 
             }else{
                 Toast.makeText(Principale.this, Const.REQUETE_EN_COURS, Toast.LENGTH_SHORT).show();
+
             }
         }
     };

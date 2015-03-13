@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/donnees_invisibles"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/AMODIFIER"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/Tmessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="3dp"
+        android:text="@string/AMODIFIER"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TableRow
+        android:id="@+id/TR1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Tmessage" >
+
+        <Button
+            android:id="@+id/B1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/AMODIFIER" />
+
+        <Button
+            android:id="@+id/B2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/AMODIFIER" />
+    </TableRow>
+
+</RelativeLayout>

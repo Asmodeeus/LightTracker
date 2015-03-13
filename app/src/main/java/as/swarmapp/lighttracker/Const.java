@@ -45,10 +45,13 @@ public final class Const {
     public static final String BUN_ADRESSE      = PREFIXE_BUNDLE + ADRESSE;
     public static final String BUN_TOKEN        = PREFIXE_BUNDLE + TOKEN;
     public static final String BUN_TRACKER      = PREFIXE_BUNDLE + TRACKER_ID;
+    public static final String BUN_TYPE_FRAG    = PREFIXE_BUNDLE + "type_fragment";
+    public static final String BUN_DONNEES      = PREFIXE_BUNDLE + "donnees";
 
     // Communication inter-activités
     public static final String DONNEES          = "adresse+token";
     public static final String DIFFUSION_GENERALE= PREFIXE_APP + "BROADCAST";
+    public static final int DIALOGUE_DUMP       = 1337;
 
         // Interaction avec le service ServiceLocalisationPOST
     public static final String ACTION           = PREFIXE_APP + "action";
@@ -68,4 +71,9 @@ public final class Const {
     // Variables par défaut
     public static final String DEF_ADRESSE      = "/listeandroid";
     public static final String DOSSIER_DUMPS    = "LightTrackerDumps";
+
+    // Fragment pour le dialogue
+    public static final int     BtnFICHIER      = 1;
+    public static final int     BtnPOST         = 2;
+    public static final String TAG_DUMP = PREFIXE_APP + "dialogue_dump";
 }
