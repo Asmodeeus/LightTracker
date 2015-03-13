@@ -35,7 +35,7 @@ public final class Const {
     public static final String ECHEC_IO         = ERREUR + "file cannot be written";
     public static final String ECHEC_BDD        = ERREUR + "data could not be updated in the database";
     public static final String ECHEC_ACCES_SD   = ERREUR + "please check that SD card is mounted";
-    public static final String ECHEC            = "Something went wrong, please try again";
+    public static final String ECHEC            = "There is nothing to dump";
     public static final String PROCESS_DUMP     = "Starting database dump";
     public static final String DUMP_PENDING     = "Still processing dump ...";
 
