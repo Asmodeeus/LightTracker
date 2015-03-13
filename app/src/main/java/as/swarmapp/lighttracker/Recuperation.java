@@ -2,7 +2,6 @@ package as.swarmapp.lighttracker;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,10 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
@@ -24,14 +24,23 @@ import as.swarmapp.lighttracker.BaseDeDonnees.Position;
 public class Recuperation extends ActionBarActivity implements GestionHorsUI {
     private Spinner sEvenement;
     private ListView lvTest;
+    private TextView tRien;
     private CheckBox cbTous;
     private String lEvenement;
     private List<Position> lesPos;
     private boolean écritureEnCours;
     private Runnable rafraichirListe = new Runnable() {
         public void run() {
-            if (lvTest!=null)
-                lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
+            if (lvTest!=null) {
+                if (lesPos != null && (!lesPos.isEmpty())) {
+                    tRien.setVisibility(View.GONE);
+                    lvTest.setVisibility(View.VISIBLE);
+                    lvTest.setAdapter(new AdaptateurListeSimple(Recuperation.this, Utiles.listePositionToListeString(lesPos)));
+                } else {
+                    lvTest.setVisibility(View.GONE);
+                    tRien.setVisibility(View.VISIBLE);
+                }
+            }
         }
     };
     private AdapterView.OnItemSelectedListener selectionEvenement = new AdapterView.OnItemSelectedListener(){
@@ -43,9 +52,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
             new Thread(new Runnable() { public void run() {
 
                 lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
-                if (!lesPos.isEmpty()) {
-                    runOnUiThread(rafraichirListe);
-                } //TODO : la liste ne se rafraichit pas lorsqu'il y a 0 positions toSend
+                runOnUiThread(rafraichirListe);
 
             } }).start();
 
@@ -53,7 +60,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            //Toast.makeText(Recuperation.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Recuperation.this, "onNothingSelected", Toast.LENGTH_SHORT).show();
         }
     };
     private View.OnClickListener OCLcbTous = new View.OnClickListener() {
@@ -62,9 +69,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
             new Thread(new Runnable() { public void run() {
 
                 lesPos = DAOPosition.getInstance(Recuperation.this).listePosition(lEvenement, cbTous.isChecked());
-                if (!lesPos.isEmpty()) {
-                    runOnUiThread(rafraichirListe);
-                }
+                runOnUiThread(rafraichirListe);
 
             } }).start();
         }
@@ -85,8 +90,9 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
                         FileOutputStream os = new FileOutputStream(Utiles.getUnFichierDeDump());
                         os.write(Utiles.listePositionToStringForDump(lesPos).getBytes());
                         os.close();
-                        if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement))
-                            Log.w("K", "coucou");
+                        if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement)){
+                            Utiles.toastLong(Recuperation.this, Const.ECHEC_BDD);
+                        }
                         runOnUiThread(rafraichirListe);
 
 
@@ -121,9 +127,10 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recuperation);
 
-        lvTest = (ListView) findViewById(R.id.LVpositions);
-        sEvenement = (Spinner)findViewById(R.id.Sevenement);
-        cbTous = (CheckBox) findViewById(R.id.CBtous);
+        lvTest      = (ListView) findViewById(R.id.LVpositions);
+        sEvenement  = (Spinner)findViewById(R.id.Sevenement);
+        cbTous      = (CheckBox) findViewById(R.id.CBtous);
+        tRien       = (TextView) findViewById(R.id.TrienAAfficher);
         cbTous.setOnClickListener(OCLcbTous);
         (findViewById(R.id.Bdump)).setOnClickListener(OCLdump);
         MAJaffichage(null);
@@ -179,12 +186,11 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
 
     @Override
     public void aFaireEnUI(final Object lAdapteur) {
-
         runOnUiThread(new Runnable() { public void run() {
-
             if (lAdapteur == null) {
                 // Aucun évènement n'est dans la base de données, on charge l'activité d'ajout d'un évènement
                 lvTest.setVisibility(View.INVISIBLE);
+                tRien.setVisibility(View.VISIBLE);
 
             }else{
                 // Il y a des évènements dans la BDD, l'affichage est celui auquel on s'attend
@@ -192,7 +198,6 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI {
                 sEvenement.setOnItemSelectedListener(selectionEvenement);
 
             }
-
         }});
     }
 }

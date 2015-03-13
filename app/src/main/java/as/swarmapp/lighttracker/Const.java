@@ -13,30 +13,31 @@ public final class Const {
     public static SimpleDateFormat SDFbdd      = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE); // timestamp selon le format de Haggis. Locale.FRANCE sert à écrire les chiffres en ASCII
 
     // Variables courantes
-    public static final String TOKEN        = "token";
-    public static final String TRACKER_ID   = "tracker_id";
-    public static final String ADRESSE      = "site";
+    public static final String TOKEN            = "token";
+    public static final String TRACKER_ID       = "tracker_id";
+    public static final String ADRESSE          = "site";
     public static final String CHAR_SEP         = " | ";
 
     // Variables liées au serveur
-    public static final String REGEX_SITE = "[a-zA-Z0-9][-a-zA-Z0-9]*(\\.[-a-zA-Z0-9]+)+(:[1-9][0-9]*)?"; // Vaguement fool-proof ... le http(s):// a été retiré avant le test et est rajouté après
-    public static final String REGEX_TOKEN = "[a-f0-9]+";
+    public static final String REGEX_SITE       = "[a-zA-Z0-9][-a-zA-Z0-9]*(\\.[-a-zA-Z0-9]+)+(:[1-9][0-9]*)?"; // Vaguement fool-proof ... le http(s):// a été retiré avant le test et est rajouté après
+    public static final String REGEX_TOKEN      = "[a-f0-9]+";
     public static final String REGEX_TRACKER_ID = "[0-9]+";
 
     // Communication avec l'utilisateur
-    public static final String ERREUR               = "An error occured : ";
-    public static final String REQUETE_EN_COURS     = "A request is pending, please wait for it to terminate.";
-    public static final String LANCEMENT_REQUETE    = "Address checking : pending";
-    public static final String ECHEC_HTTP           = "Could not establish connection to server, please check the address";
-    public static final String ECHEC_AUTH           = "Tracker id/Token were not accepted by server, please check them.";
-    public static final String INVALID_             = "\"%s\" is invalid.";
-    public static final String OK_CHANGEMENTS       = "Changes have been saved.";
-    public static final String ERR_DOSSIER_DUMP     = ERREUR + "dump directory cannot be created.";
-    public static final String ECHEC_IO             = ERREUR + "file cannot be written";
-    public static final String ECHEC_ACCES_SD       = "Please check that SD card is mounted";
-    public static final String ECHEC                = "Something went wrong, please try again.";
-    public static final String PROCESS_DUMP         = "Starting database dump.";
-    public static final String DUMP_PENDING         = "Still processing dump ...";
+    public static final String ERREUR           = "An error occured : ";
+    public static final String REQUETE_EN_COURS = "A request is pending, please wait for it to terminate.";
+    public static final String LANCEMENT_REQUETE= "Address checking : pending";
+    public static final String ECHEC_HTTP       = "Could not establish connection to server, please check the address";
+    public static final String ECHEC_AUTH       = "Tracker id/Token were not accepted by server, please check them";
+    public static final String INVALID_         = "\"%s\" is invalid";
+    public static final String OK_CHANGEMENTS   = "Changes have been saved";
+    public static final String ERR_DOSSIER_DUMP = ERREUR + "dump directory cannot be created";
+    public static final String ECHEC_IO         = ERREUR + "file cannot be written";
+    public static final String ECHEC_BDD        = ERREUR + "data could not be updated in the database";
+    public static final String ECHEC_ACCES_SD   = ERREUR + "please check that SD card is mounted";
+    public static final String ECHEC            = "Something went wrong, please try again";
+    public static final String PROCESS_DUMP     = "Starting database dump";
+    public static final String DUMP_PENDING     = "Still processing dump ...";
 
     // Sauvegardes en bundle
     public static final String PREFIXE_BUNDLE   = PREFIXE_APP + "bundle.";

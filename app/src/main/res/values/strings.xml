@@ -20,5 +20,6 @@
     <string name="TadressePOST">Address to POST data :</string>
     <string name="Bvalider">Save changes</string>
     <string name="Bdump">Dump</string>
-    <string name="CBtous">Dump sent data also ?</string>
+    <string name="CBtous">Dump sent data too ?</string>
+    <string name="TrienAAfficher">There is nothing to dump</string>
 </resources>
