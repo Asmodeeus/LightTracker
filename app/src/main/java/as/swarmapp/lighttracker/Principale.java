@@ -14,6 +14,8 @@ import android.widget.Toast;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
+
 
 public class Principale extends ActionBarActivity implements GestionHorsUI {
     //public static String   CHECK_PHRASE    = "Hello ! Everything seems fine around here ;)";
@@ -21,7 +23,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     public static int      TOKEN            = 1;
     public static int      TRACKER_ID       = 2;
     public static String   CHECK_PAGE      = "/what";
-    public static String   PARAMS_TRACK_TOKEN = "?" + Const.TRACKER_ID + "=%s&" + Const.TOKEN + "=%s";
+    public static String   PARAMS_TRACK_TOKEN = "?" + DAOPosition.TRACKER_ID + "=%s&" + DAOPosition.TOKEN + "=%s";
     private static String   site_debug      = "http://haggis.ensta-bretagne.fr:3000"; //FIXME : à retirer
     private static String   token_debug     = "705907f6964d8565573dd3ee73775831"; //FIXME : à retirer
     private static String   tracker_debug   = "12"; //FIXME : à retirer

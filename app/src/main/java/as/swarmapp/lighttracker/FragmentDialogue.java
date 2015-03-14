@@ -2,16 +2,12 @@ package as.swarmapp.lighttracker;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import as.swarmapp.lighttracker.Const;
-import as.swarmapp.lighttracker.R;
 
 /** Dialogue permettant à l'utilisateur de répondre oui ou non à une question.<br>
  * Cette classe se comporte comme une usine, elle n'est pas les boites de dialogues mais elle les génère.<br>

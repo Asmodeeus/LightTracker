@@ -14,25 +14,34 @@ public final class Const {
 
     // Variables courantes
     public static final String TOKEN            = "token";
-    public static final String TRACKER_ID       = "tracker_id";
+    public static final String TRACKER_ID       = "id";
+    public static final String DATETIME         = "datetime";
+    public static final String LATITUDE         = "latitude";
+    public static final String LONGITUDE         = "longitude";
     public static final String ADRESSE          = "site";
-    public static final String CHAR_SEP         = " | ";
+    public static final String STR_SPLIT        = "|";
 
     // Variables liées au serveur
     public static final String REGEX_SITE       = "[a-zA-Z0-9][-a-zA-Z0-9]*(\\.[-a-zA-Z0-9]+)+(:[1-9][0-9]*)?"; // Vaguement fool-proof ... le http(s):// a été retiré avant le test et est rajouté après
     public static final String REGEX_TOKEN      = "[a-f0-9]+";
     public static final String REGEX_TRACKER_ID = "[0-9]+";
 
+        // Pour le HTTP
+    public static final String FORMAT_PARAM_    = "%s=%s&";
+    public static final String LISTE_           = "liste[%s]";
+    public static final String SPLIT_LISTE      = "_";
+
     // Communication avec l'utilisateur
     public static final String ERREUR           = "An error occured : ";
     public static final String REQUETE_EN_COURS = "A request is pending, please wait for it to terminate.";
     public static final String LANCEMENT_REQUETE= "Address checking : pending";
-    public static final String ECHEC_HTTP       = "Could not establish connection to server, please check the address";
+    public static final String ECHEC_HTTP       = "Could not establish connection to server, please check address or internet connection";
     public static final String ECHEC_AUTH       = "Tracker id/Token were not accepted by server, please check them";
     public static final String INVALID_         = "\"%s\" is invalid";
     public static final String OK_CHANGEMENTS   = "Changes have been saved";
     public static final String ERR_DOSSIER_DUMP = ERREUR + "dump directory cannot be created";
     public static final String ECHEC_IO         = ERREUR + "file cannot be written";
+    public static final String ECHEC_POST       = ERREUR + "data could not be send";
     public static final String ECHEC_BDD        = ERREUR + "data could not be updated in the database";
     public static final String ECHEC_ACCES_SD   = ERREUR + "please check that SD card is mounted";
     public static final String ECHEC            = "There is nothing to dump";
@@ -50,13 +59,9 @@ public final class Const {
 
     // Communication inter-activités
     public static final String DONNEES          = "adresse+token";
-    public static final String DIFFUSION_GENERALE= PREFIXE_APP + "BROADCAST";
-    public static final int DIALOGUE_DUMP       = 1337;
 
         // Interaction avec le service ServiceLocalisationPOST
-    public static final String ACTION           = PREFIXE_APP + "action";
     public static final String ACTION_START     = PREFIXE_APP + "action.START";
-    public static final String ACTION_STOP      = PREFIXE_APP + "action.STOP";
     public static final String EXTRA_ADRESSE    = PREFIXE_APP + "extra.ADRESSE";
     public static final String EXTRA_TRACKER    = PREFIXE_APP + "extra.TRACKER";
     public static final String EXTRA_TOKEN      = PREFIXE_APP + "extra.TOKEN";
@@ -75,5 +80,5 @@ public final class Const {
     // Fragment pour le dialogue
     public static final int     BtnFICHIER      = 1;
     public static final int     BtnPOST         = 2;
-    public static final String TAG_DUMP = PREFIXE_APP + "dialogue_dump";
+    public static final String  TAG_DUMP = PREFIXE_APP + "dialogue_dump";
 }

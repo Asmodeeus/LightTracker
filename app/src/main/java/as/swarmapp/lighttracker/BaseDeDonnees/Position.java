@@ -2,10 +2,14 @@ package as.swarmapp.lighttracker.BaseDeDonnees;
 
 import android.location.Location;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import as.swarmapp.lighttracker.Const;
+import as.swarmapp.lighttracker.Utiles;
 
 /**
  * Created by asmodeeus on 10/03/15.
@@ -77,6 +81,7 @@ public class Position {
         return toSend;
     }
 
+    /*
     @Override
     public String toString() {
         String horodate = datetime;
@@ -89,20 +94,43 @@ public class Position {
                 ", longitude=" + longi +
                 " (" + horodate + ")]";
     }
+    //*/
 
-    /*
+    public String toParams(){
+        Map<String, String> paramsKV = new HashMap<>(5);
+        paramsKV.put(String.format(Const.LISTE_, DAOPosition.TOKEN), token);
+        paramsKV.put(String.format(Const.LISTE_, DAOPosition.TRACKER_ID), Long.toString(tracker_id));
+        paramsKV.put(String.format(Const.LISTE_, DAOPosition.HORODATE), datetime);
+        paramsKV.put(String.format(Const.LISTE_, DAOPosition.LATITUDE), String.valueOf(lati));
+        paramsKV.put(String.format(Const.LISTE_, DAOPosition.LONGITUDE), String.valueOf(longi));
+
+        return Utiles.mapToParams(paramsKV);
+    }
+
+    public static String colonnesFichierDump() {
+        return String.format("%s\t%s\t%16s\t%9s\t%s\n", Const.TRACKER_ID, Const.DATETIME, Const.LATITUDE, Const.LONGITUDE, Const.TOKEN);
+    }
+
+    public String toStringForDump() {
+        String horodate = datetime;
+        try{
+            horodate = Const.SDFbdd.format(Const.SDFrequetes.parse(datetime));
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        return String.format("%d\t%s\t% f\t% 10f\t%10s\n", tracker_id, horodate, lati, longi, token);
+    }
+
+    //*
     @Override
     public String toString() {
-        return "Position{" +
-                "id=" + id +
-                ", event='" + event + '\'' +
-                ", tracker_id=" + tracker_id +
-                ", token='" + token + '\'' +
-                ", datetime='" + datetime + '\'' +
-                ", lati=" + lati +
-                ", longi=" + longi +
-                ", toSend? " + toSend +
-                '}';
+        String horodate = datetime;
+        try{
+            horodate = Const.SDFbdd.format(Const.SDFrequetes.parse(datetime));
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        return MessageFormat.format("id : {0} ({1}), coord : {2}, {3}", tracker_id, horodate, lati, longi);
     }
     //*/
 }

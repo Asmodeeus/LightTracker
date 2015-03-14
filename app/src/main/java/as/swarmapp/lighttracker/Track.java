@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
@@ -123,7 +122,6 @@ public class Track extends ActionBarActivity {
     }
 
     private void arreterTracking() {
-        Log.w("arreterTracking", ".");
         //LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Const.DIFFUSION_GENERALE).putExtra(Const.ACTION, Const.ACTION_STOP));
         ServiceLocalisationPOST.getInstance().stopTracking();
     }

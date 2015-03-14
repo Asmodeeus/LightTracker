@@ -6,12 +6,13 @@ package as.swarmapp.lighttracker;
 public class Imprevus {
 
     private final static int UN = 0b1;
-    public final static long INCONNUE               = UN << 1;
-    public final static long E_BAD_REQUEST          = UN << 2;
-    public final static long E_SERVICE_UNAVAILABLE  = UN << 3;
-    public final static long E_API_CONNECTION_FAILED = UN << 4;
+    public final static long INCONNUE                   = UN << 1;
+    public final static long E_BAD_REQUEST              = UN << 2;
+    public final static long E_SERVICE_UNAVAILABLE      = UN << 3;
+    public final static long E_API_CONNECTION_FAILED    = UN << 4;
 
-    public final static int W_API_CONNEXION_SUSPENDUE = UN << 1;
+    public final static int W_API_CONNEXION_SUSPENDUE   = UN << 1;
+    public final static int W_CONNEXION_PERDUE          = UN << 2;
 
     private static long erreurs = 0L;
     private static int avert = 0;

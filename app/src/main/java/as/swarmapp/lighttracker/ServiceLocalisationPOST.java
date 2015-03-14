@@ -17,15 +17,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.UnknownHostException;
 
 import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
 import as.swarmapp.lighttracker.BaseDeDonnees.Position;
@@ -35,10 +30,6 @@ public class ServiceLocalisationPOST extends Service implements
     private boolean tracking = true;
 
     public static ServiceLocalisationPOST leService;
-
-    // Pour le HTTP
-    public static final String FORMAT_PARAM_ = "%s=%s&";
-    public static final String LISTE_ = "liste[%s]";
 
     // Pour la localisation
     private GoogleApiClient monClient;
@@ -219,20 +210,22 @@ public class ServiceLocalisationPOST extends Service implements
     public Boolean POSTposition(Position p){
 
         String url = p.getEvent();
-        String params = positionToURL(p);
+        String params = p.toParams();
         Boolean ok = false;
         try {
             //*
             // Version POST
             HttpURLConnection urlConnection = (HttpURLConnection) (new URL(url)).openConnection();
             int longueurParams = params.getBytes().length;
-            preparerPourPOST(urlConnection, longueurParams);
+            Utiles.preparerPourPOST(urlConnection, longueurParams);
 
             try {
-                paramsPOST(urlConnection, params);
-                ok = isRequeteOK(urlConnection);
+                Utiles.paramsPOST(urlConnection, params);
+                ok = Utiles.isRequeteOK(urlConnection);
                 //ok = reponseRequetePOST(urlConnection);
 
+            }catch (UnknownHostException e){
+                Imprevus.rapporterAvertissement(Imprevus.W_CONNEXION_PERDUE);
 
             }finally{
                 urlConnection.disconnect();
@@ -258,30 +251,6 @@ public class ServiceLocalisationPOST extends Service implements
         return ok;
     }
 
-    public static HttpURLConnection preparerPourPOST(HttpURLConnection u, int taille_requete) throws ProtocolException {
-        u.setReadTimeout(10000);
-        u.setConnectTimeout(15000);
-        u.setRequestMethod("POST");
-        u.setFixedLengthStreamingMode(taille_requete);
-        u.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        u.setRequestProperty("User-Agent", "Mozilla");
-        u.setRequestProperty("Accept", "*/*");
-        u.setInstanceFollowRedirects(false);
-        u.setDoInput(true);
-        u.setDoOutput(true);
-        return u;
-    }
-
-    public static HttpURLConnection paramsPOST(HttpURLConnection u, String params) throws Exception{
-        OutputStream osDeURLconn = u.getOutputStream();
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(osDeURLconn, "UTF-8"));
-        writer.write(params);
-        writer.flush();
-        writer.close();
-        osDeURLconn.close();
-        return u;
-    }
-
     public static Boolean reponseRequetePOST(HttpURLConnection u) throws Exception{
         InputStream inDeURLconn;
         try {
@@ -301,51 +270,5 @@ public class ServiceLocalisationPOST extends Service implements
             Log.w("code : ", String.valueOf(u.getResponseCode()));
             inDeURLconn = new BufferedInputStream(u.getErrorStream());
         }//*/
-    }
-
-    public static Boolean isRequeteOK(HttpURLConnection u) throws Exception{
-        int c = u.getResponseCode();
-        switch(c){
-            case HttpURLConnection.HTTP_OK:
-                return true;
-
-            case HttpURLConnection.HTTP_BAD_REQUEST:
-                Imprevus.rapporterErreur(Imprevus.E_BAD_REQUEST);
-                break;
-
-            case HttpURLConnection.HTTP_UNAVAILABLE:
-                Imprevus.rapporterErreur(Imprevus.E_SERVICE_UNAVAILABLE);
-                break;
-
-            default:
-                Imprevus.rapporterErreur(Imprevus.INCONNUE);
-                break;
-
-        }
-        return false;
-    }
-
-    public String positionToURL(Position p){
-        Map<String, String> paramsKV = new HashMap<>(5);
-        paramsKV.put(String.format(LISTE_, DAOPosition.TOKEN), p.getToken());
-        paramsKV.put(String.format(LISTE_, DAOPosition.TRACKER_ID), Long.toString(p.getTracker_id()));
-        paramsKV.put(String.format(LISTE_, DAOPosition.HORODATE), p.getDatetime());
-        paramsKV.put(String.format(LISTE_, DAOPosition.LATITUDE), String.valueOf(p.getLatitude()));
-        paramsKV.put(String.format(LISTE_, DAOPosition.LONGITUDE), String.valueOf(p.getLongitude()));
-
-        return mapToParams(paramsKV);
-    }
-
-    public static String mapToParams(Map<String, String> laMap){
-        String s = "";
-
-        for (String k:laMap.keySet()) {
-            s += String.format(FORMAT_PARAM_,k, laMap.get(k));
-        }
-        if (s.length()-1 >= 0) {
-            return s.substring(0, s.length() - 1);
-        }
-        else
-            return "";
     }
 }

@@ -1,8 +1,9 @@
 package as.swarmapp.lighttracker;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,8 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import as.swarmapp.lighttracker.BaseDeDonnees.DAOPosition;
@@ -29,7 +34,8 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
     private CheckBox cbTous;
     private String lEvenement;
     private List<Position> lesPos;
-    private boolean écritureEnCours;
+    private boolean écritureEnCours = false;
+    private boolean requeteEnCours = false;
     private Runnable rafraichirListe = new Runnable() {
         public void run() {
             if (lvTest!=null) {
@@ -53,7 +59,6 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
     private AdapterView.OnItemSelectedListener selectionEvenement = new AdapterView.OnItemSelectedListener(){
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            //Toast.makeText(Recuperation.this, "onItemSelected", Toast.LENGTH_SHORT).show();
             lEvenement = parent.getItemAtPosition(position).toString();
 
             new Thread(miseAJourListe).start();
@@ -127,7 +132,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
     public void choixDialogue(int bouton, String donnees) {
         if (bouton==Const.BtnFICHIER){
             if (lesPos==null || lesPos.isEmpty()){
-                Utiles.toastLong(Recuperation.this, Const.ECHEC);
+                Utiles.toastLong(this, Const.ECHEC);
                 return;
             }
             new Thread(new Runnable() { public void run() {
@@ -136,13 +141,21 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
                     Utiles.toastLong(Recuperation.this, Const.PROCESS_DUMP);
 
                     try {
-                        FileOutputStream os = new FileOutputStream(Utiles.getUnFichierDeDump());
+                        File fichierDump = Utiles.getUnFichierDeDump();
+                        FileOutputStream os = new FileOutputStream(fichierDump);
                         os.write(Utiles.listePositionToStringForDump(lesPos).getBytes());
                         os.close();
                         if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement)){
                             Utiles.toastLong(Recuperation.this, Const.ECHEC_BDD);
                         }
                         new Thread(miseAJourListe).start();
+
+                        // On visionne le fichier ?
+                        try {
+                            Recuperation.this.startActivity(new Intent(android.content.Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(fichierDump), "text/plain"));
+                        } catch (android.content.ActivityNotFoundException e) {
+                            e.printStackTrace();
+                        }
 
                     } catch (FileNotFoundException e) {
                         Utiles.toastLong(Recuperation.this, e.getMessage());
@@ -152,26 +165,75 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
                         e.printStackTrace();
 
                     }finally{
-                        écritureEnCours = false;
-
+                        synchronized (this) {
+                            try {
+                                wait(1000); //évite le double clic
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }finally {
+                                écritureEnCours = false;
+                            }
+                        }
                     }
+
                 }else{
                     Utiles.toastLong(Recuperation.this, Const.DUMP_PENDING);
 
                 }
-                synchronized (this) {
-                    try {
-                        wait(1000); //évite le double clic
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
             } }).start();
 
         } else if(bouton==Const.BtnPOST) {
-            // Effectuer un POST sur le serveur
-            //TODO Effectuer un POST sur le serveur
-            Log.w("TODO", "j'effectue un POST sur le serveur");
+            // Effectuer un POST sur le serveur (ou plusieurs si plusieurs tracker_id ont été enregistrés)
+            final String corpsRequetesPOST[] = Utiles.listePositionToPOSTparams(lesPos);
+
+            if(!requeteEnCours){
+                new Thread(new Runnable() { public void run() {
+                    requeteEnCours = true;
+                    boolean ok = true;
+
+                    for (String paramRequete : corpsRequetesPOST){
+                        // On effectue la requête dont le corps est corpsRequetesPOST[ii]
+
+                        try {
+                            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(lEvenement)).openConnection();
+                            int longueurParams = paramRequete.getBytes().length;
+                            Utiles.preparerPourPOST(urlConnection, longueurParams);
+
+                            try {
+                                Utiles.paramsPOST(urlConnection, paramRequete);
+                                ok &= Utiles.isRequeteOK(urlConnection);
+
+                            }catch (UnknownHostException e){
+                                Imprevus.rapporterAvertissement(Imprevus.W_CONNEXION_PERDUE);
+                                ok = false;
+
+                            }finally{
+                                urlConnection.disconnect();
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                    requeteEnCours = false;
+                    if (!ok){
+                        // Au moins une requête a échoué
+                        Utiles.toastLong(Recuperation.this, Const.ECHEC_POST);
+
+                    }else{
+                        // Toutes les requêtes se sont bien passées : on place les Positions de la BDD dans l'état "envoyées"
+                        if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement)){
+                            Utiles.toastLong(Recuperation.this, Const.ECHEC_BDD);
+                        }
+                        new Thread(miseAJourListe).start();
+
+                    }
+
+                } }).start();
+            }else{
+                Utiles.toastLong(Recuperation.this, Const.DUMP_PENDING);
+
+            }
         }
     }
 
@@ -193,7 +255,7 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
             return null;
 
         }else {
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Recuperation.this, android.R.layout.simple_spinner_item, lesEvenements);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Recuperation.this, android.R.layout.simple_spinner_item, lesEvenements);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
             return dataAdapter;
