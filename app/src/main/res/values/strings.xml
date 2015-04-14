@@ -27,4 +27,7 @@
     <string name="D_POST">Send data to server</string>
     <string name="DTIdump">Data dumping</string>
     <string name="DTXdump">Please choose where and how to dump data :</string>
+    <string name="imprevus">Troubleshooting</string>
+    <string name="title_activity_trouble_shooting">TroubleShooting</string>
+    <string name="RAZimprevus">Reset markers</string>
 </resources>

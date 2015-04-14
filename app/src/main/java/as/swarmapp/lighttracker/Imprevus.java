@@ -1,5 +1,7 @@
 package as.swarmapp.lighttracker;
 
+import java.util.List;
+
 /**
  * Created by asmodeeus on 11/03/15.
  */
@@ -50,5 +52,9 @@ public class Imprevus {
         avert = 0;
     }
 
+    public static List<String> aficherErreurs(){
+
+        return null;
+    }
     //TODO : créer une fonction qui retourne une liste de string avec le nom de l'erreur, ou " " si pas d'erreur
 }

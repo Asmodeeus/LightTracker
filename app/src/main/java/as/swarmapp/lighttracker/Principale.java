@@ -25,8 +25,8 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     public static String   CHECK_PAGE      = "/what";
     public static String   PARAMS_TRACK_TOKEN = "?" + DAOPosition.TRACKER_ID + "=%s&" + DAOPosition.TOKEN + "=%s";
     private static String   site_debug      = "http://haggis.ensta-bretagne.fr:3000"; //FIXME : à retirer
-    private static String   token_debug     = "705907f6964d8565573dd3ee73775831"; //FIXME : à retirer
-    private static String   tracker_debug   = "12"; //FIXME : à retirer
+    private static String   token_debug     = "409864a6df4ff2ac0ee65cc523896b8e"; //FIXME : à retirer
+    private static String   tracker_debug   = "15"; //FIXME : à retirer
 
     // Sémaphore interdisant d'executer plusieurs requêtes en même temps
     private boolean         requeteEnCours  = false;
@@ -92,6 +92,10 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
 
             case R.id.recuperation_donnees:
                 startActivity(new Intent(Principale.this, Recuperation.class));
+                return true;
+
+            case R.id.imprevus:
+                startActivity(new Intent(Principale.this, TroubleShooting.class));
                 return true;
         }
 
