@@ -42,7 +42,7 @@ public class Position {
     }
 
     public static Position positionFromLocation(String event, long tracker_id, String token, Location l){
-        return new Position(event, tracker_id, token, Const.SDFrequetes.format(new Date()),(float) l.getLatitude(),(float) l.getLongitude());
+        return new Position(event, tracker_id, token, Const.SDFrequetes.format(new Date(l.getTime())),(float) l.getLatitude(),(float) l.getLongitude());
     }
 
     public void setId(long id) {

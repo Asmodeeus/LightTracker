@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.HttpURLConnection;
@@ -25,8 +26,8 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     public static String   CHECK_PAGE      = "/what";
     public static String   PARAMS_TRACK_TOKEN = "?" + DAOPosition.TRACKER_ID + "=%s&" + DAOPosition.TOKEN + "=%s";
     private static String   site_debug      = "http://haggis.ensta-bretagne.fr:3000"; //FIXME : à retirer
-    private static String   token_debug     = "409864a6df4ff2ac0ee65cc523896b8e"; //FIXME : à retirer
-    private static String   tracker_debug   = "15"; //FIXME : à retirer
+    private static String   token_debug     = "705907f6964d8565573dd3ee73775831"; //FIXME : à retirer
+    private static String   tracker_debug   = "12"; //FIXME : à retirer
 
     // Sémaphore interdisant d'executer plusieurs requêtes en même temps
     private boolean         requeteEnCours  = false;
@@ -57,12 +58,15 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         sharedPref 	= getSharedPreferences(Const.PREFERENCES, Context.MODE_PRIVATE);
         // Initialisation du sémaphore de requêtes
         requeteEnCours = false;
+        TextView tSite = (TextView) findViewById(R.id.Tsite);
+        tSite.setText(String.format(tSite.getText()+" or '%s'",Const.LOCALHOST));
 
 
         eSite       = (EditText) findViewById(R.id.Esite);
         eToken      = (EditText) findViewById(R.id.Etoken);
         eTracker    = (EditText) findViewById(R.id.Etracker);
 
+        eSite       .setHint(Const.LOCALHOST);
         eSite       .setText(sharedPref.getString(Const.PREF_SITE, "" + site_debug));
         eToken      .setText(sharedPref.getString(Const.PREF_TOKEN, "" + token_debug));
         eTracker    .setText(sharedPref.getString(Const.PREF_TRACKER, "" + tracker_debug));
@@ -106,6 +110,10 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
         String site = eSite.getText().toString();
         String token = eToken.getText().toString().toLowerCase();
         String tracker_id = eTracker.getText().toString();
+        if (site.compareTo(Const.LOCALHOST)==0){
+            return new String[]{site, token, tracker_id};
+        }
+
         String prefixe = "http://";
 
         if (site.startsWith("http://")){
@@ -156,6 +164,9 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     @Override
     public Object aFaireHorsUI(Object o) {
         final String donnees[] = (String[]) o;
+        if (donnees[SITE].compareTo(Const.LOCALHOST)==0){
+            return donnees;
+        }
         boolean ok = false;
 
         try {

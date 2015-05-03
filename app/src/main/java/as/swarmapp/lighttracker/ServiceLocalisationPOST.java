@@ -184,8 +184,8 @@ public class ServiceLocalisationPOST extends Service implements
                 // On ajoute la position à la base de données
                 long id_pos = monDAO.ajouter(laPos);
 
-                // On essaie de l'envoyer au serveur
-                if (POSTposition(laPos)){
+                // On essaie de l'envoyer au serveur si c'est pas "localhost"
+                if ((laPos.getEvent().compareTo(Const.LOCALHOST)!=0) && POSTposition(laPos)){
 
                     // si ça réussit, on la note comme "envoyée"
                     monDAO.setSent(id_pos);

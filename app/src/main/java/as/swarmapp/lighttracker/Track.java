@@ -48,7 +48,8 @@ public class Track extends ActionBarActivity {
 
             if (donnees != null && donnees.length > 2) {
                 // Récupération des données de l'Intention
-                adresse = donnees[Principale.SITE] + sharedPref.getString(Const.PREF_ADRESSE_POST, Const.DEF_ADRESSE);
+                String suffixe = (donnees[Principale.SITE].compareTo(Const.LOCALHOST)==0)? "":sharedPref.getString(Const.PREF_ADRESSE_POST, Const.DEF_ADRESSE);
+                adresse = donnees[Principale.SITE] + suffixe;
                 token = donnees[Principale.TOKEN];
                 tracker_id = Long.valueOf(donnees[Principale.TRACKER_ID]);
 

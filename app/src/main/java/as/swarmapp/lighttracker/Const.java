@@ -19,6 +19,7 @@ public final class Const {
     public static final String LATITUDE         = "latitude";
     public static final String LONGITUDE         = "longitude";
     public static final String ADRESSE          = "site";
+    public static final String LOCALHOST        = "localhost";
     public static final String STR_SPLIT        = "|";
 
     // Variables liées au serveur
