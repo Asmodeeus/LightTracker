@@ -25,6 +25,7 @@
     <string name="AMODIFIER">\" \"</string>
     <string name="D_fichier">Save in .txt file</string>
     <string name="D_POST">Send data to server</string>
+    <string name="D_MARQUER">Mark all as sent</string>
     <string name="DTIdump">Data dumping</string>
     <string name="DTXdump">Please choose where and how to dump data :</string>
     <string name="imprevus">Troubleshooting</string>

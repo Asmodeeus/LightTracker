@@ -81,5 +81,6 @@ public final class Const {
     // Fragment pour le dialogue
     public static final int     BtnFICHIER      = 1;
     public static final int     BtnPOST         = 2;
+    public static final int     BtnMARQUER      = 3;
     public static final String  TAG_DUMP = PREFIXE_APP + "dialogue_dump";
 }

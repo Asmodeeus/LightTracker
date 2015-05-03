@@ -165,6 +165,7 @@ public class Principale extends ActionBarActivity implements GestionHorsUI {
     public Object aFaireHorsUI(Object o) {
         final String donnees[] = (String[]) o;
         if (donnees[SITE].compareTo(Const.LOCALHOST)==0){
+            requeteEnCours = false;
             return donnees;
         }
         boolean ok = false;

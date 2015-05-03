@@ -147,10 +147,12 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
                         FileOutputStream os = new FileOutputStream(fichierDump);
                         os.write(Utiles.listePositionToStringForDump(lesPos).getBytes());
                         os.close();
+                        /*
                         if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement)){
                             Utiles.toastLong(Recuperation.this, Const.ECHEC_BDD);
                         }
                         new Thread(miseAJourListe).start();
+                        */
 
                         // On visionne le fichier ?
                         try {
@@ -232,10 +234,20 @@ public class Recuperation extends ActionBarActivity implements GestionHorsUI, Fr
                     }
 
                 } }).start();
-            }else{
-                Utiles.toastLong(Recuperation.this, Const.DUMP_PENDING);
-
             }
+        } else if(bouton==Const.BtnMARQUER) {
+            if (lesPos==null || lesPos.isEmpty()){
+                Utiles.toastLong(this, Const.ECHEC);
+                return;
+            }
+
+            new Thread(new Runnable() { public void run() {
+                if (!DAOPosition.getInstance(Recuperation.this).setAllSent(lEvenement)){
+                    Utiles.toastLong(Recuperation.this, Const.ECHEC_BDD);
+                }
+                new Thread(miseAJourListe).start();
+            } }).start();
+
         }
     }
 

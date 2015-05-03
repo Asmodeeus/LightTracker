@@ -25,6 +25,7 @@ public class FragmentDialogue extends DialogFragment {
     private TextView Tmessage;
     private Button B1;
     private Button B2;
+    private Button B3;
     /** Callback activé lors du clic sur un des boutons de choix possibles */
     private OnClickListener clicBouton = new OnClickListener(){
         @Override
@@ -38,6 +39,10 @@ public class FragmentDialogue extends DialogFragment {
 
                 case R.id.B2:
                     parent.choixDialogue(Const.BtnPOST, invisible.getText().toString());
+                    break;
+
+                case R.id.B3:
+                    parent.choixDialogue(Const.BtnMARQUER, invisible.getText().toString());
                     break;
 
                 default:
@@ -89,10 +94,13 @@ public class FragmentDialogue extends DialogFragment {
         Tmessage	= (TextView)	view.findViewById(R.id.Tmessage);
         B1 			= (Button) 		view.findViewById(R.id.B1);
         B2 			= (Button) 		view.findViewById(R.id.B2);
+        B3 			= (Button) 		view.findViewById(R.id.B3);
         B1.setOnClickListener(clicBouton);
         B2.setOnClickListener(clicBouton);
+        B3.setOnClickListener(clicBouton);
         B1.setText(getString(R.string.D_fichier));
         B2.setText(getString(R.string.D_POST));
+        B3.setText(getString(R.string.D_MARQUER));
         invisible.setText(donnees);
 
 
